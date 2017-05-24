@@ -5,7 +5,7 @@
 	If clients/probes were configured to check for server side certificates the traditional 
 	EvilTwin attack vector would no longer be feasible, and a second attack vector would need to exists.
 
-	Often Pentesters perform Password Sprays on internal engagements against hosts running the 
+	Often Pentesters perform brute-force attacks on internal engagements against hosts running the 
 	Server Message Block (SMB) service. Common EAP configurations use the same usernames and passwords 
 	as an SMB service would on the internal network.
 	
@@ -30,8 +30,6 @@
  	       [!] Database not found: data/WiFiSuite.db
  	       [i] Created Datebase: data/WiFiSuite.db
  	       [i] Database instantiated
-##
-   ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
 
 ## Uninstall
     cd WiFiSuite
@@ -77,9 +75,9 @@
 ## :book: Cheat Sheet
     * SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     * ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
-    * SPRAY (EAP):    python wifisuite.py -iwlan0 -s"RadiusX" -u data/users.txt -pSummer2017! spray
+    * SPRAY (EAP):    python wifisuite.py -iwlan0 -s"RadiusX" -u data/users.txt -pWelcome1 spray
     * SPRAY (WPA):    python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p data/passwords.txt spray
-    * CONNECT (EAP):  python wifisuite.py -iwlan0 -s"RadiusX" -ujbrown -pSummer2017! connect
+    * CONNECT (EAP):  python wifisuite.py -iwlan0 -s"RadiusX" -ubeamr -pWelcome1 connect
     * CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
     * CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
     * MAC (Randomize):python wifisuite.py -iwlan0 mac
@@ -88,9 +86,13 @@
     
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
-     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-A.gif)
+     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-B.gif)
 ##
 
+* SPRAY (EAP): Perform a EAP Password Spray against across a list of user accounts using a single password.
+	       
+     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSPRAYEAP-A.gif)
+##
     
     
  
