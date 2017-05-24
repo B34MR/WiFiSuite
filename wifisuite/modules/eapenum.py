@@ -38,7 +38,7 @@ bssid = set()
 class eapEnum(threading.Thread):
 	def __init__(self, apmac, broadcastMac, timeout, deauthPktCount, interface, channel):
 		threading.Thread.__init__(self)
-		self.setDaemon(0) # Thread is not a daemon
+		self.setDaemon(0) # Thread is not a daemon, resolves issues with terminating reactor.
 		self.apmac = apmac
 		self.broadcastMac = broadcastMac
 		self.timeout = timeout # must be >0, if you choose not to include a timeout the args must me removed.
@@ -86,7 +86,7 @@ class eapEnum(threading.Thread):
 			print(red('!') + 'Error sending deauth packets: %s' % e)
 
 	def packethandler(self, pkt):
-		essid = 'RadiusX'
+		essid = ''
 		# clients=[]
 		# bssid=set()
 		# mgmtFrameTypes = (0,2,4)
