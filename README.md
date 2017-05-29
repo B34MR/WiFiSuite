@@ -20,8 +20,8 @@
     
 ## Installation:
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
-    	cd WiFiSuite
-    	python setup.py install --record install.log 
+	cd WiFiSuite
+	python setup.py install --record install.log 
 ##
 	cd wifisuite/
 	python wifisuite.py
@@ -32,8 +32,8 @@
  	       [i] Database instantiated
 
 ## Uninstall:
-    # cd WiFiSuite
-    # cat install.log | xargs rm -rf
+    cd WiFiSuite
+    cat install.log | xargs rm -rf
 
 ## Dependencies:
     netifaces
