@@ -49,6 +49,18 @@
     
     Resolution:
     pip install matplotlib --upgrade
+
+## :book: Cheat Sheet
+    * SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
+    * ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
+    * SPRAY (EAP):    python wifisuite.py -iwlan0 -s"RadiusX" -u data/users.txt -pSummer2017! spray
+    * SPRAY (WPA):    python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p data/passwords.txt spray
+    * CONNECT (EAP):  python wifisuite.py -iwlan0 -s"RadiusX" -ujbrown -pSummer2017! connect
+    * CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
+    * CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
+    * MAC (Randomize):python wifisuite.py -iwlan0 mac
+    * MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
+    * DATABASE:       python wifisuite.py database
  
 ## :octocat: Credits
 	Contributor(s):             Bill Harshbarger 'https://github.com/bharshbarger'
