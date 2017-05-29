@@ -11,30 +11,34 @@
 	I asked myself “why not perform a Password Spray against those same high quality user passwords as SMB?”  
 	
 	Tbh probably because I couldn’t find a tool out there that already did this, hence why I began development. 
-	Admittedly, I discovered performing a Password Spray over WiFi is MUCH slower than on the wire, but it’s a first step 	      and hopefully this process can become more efficient with some clever ideas and engineering. 
+	Admittedly, I discovered performing a Password Spray over WiFi is MUCH slower than on the wire, but it’s a 
+	first step and hopefully this process can become more efficient with some clever ideas and engineering. 
 
 
 ## :heavy_exclamation_mark: Requirements
 	Kali 2016.1 or Kali 2016.2 rolling. 
-	WiFi card is recommended.
-	Known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
+	External WiFi card, known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
     
 # Installation:
 ``` git clone https://github.com/NickSanzotta/WiFiSuite.git
     cd WiFiSuite
-    python setup.py install --record install.log ```
-    
-   ``` # cd wifisuite/
-    # python wifisuite.py ```
-   ``` OUTPUT:
+    python setup.py install --record install.log 
+```
+#
+``` # cd wifisuite/
+    # python wifisuite.py
+    OUTPUT:
 	[i] Directory found: data/
  	[!] Database not found: data/WiFiSuite.db
  	[i] Created Datebase: data/WiFiSuite.db
- 	[i] Database instantiated```
+ 	[i] Database instantiated
+```
 
 # Uninstall:
+```
     # cd WiFiSuite
     # cat install.log | xargs rm -rf
+```
 
 # Dependencies:
     netifaces
