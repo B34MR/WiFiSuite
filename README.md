@@ -1,12 +1,17 @@
 ![Supported Python versions](https://img.shields.io/badge/python-2.7-blue.svg)
 # WiFiSuite     
-	WiFiSuite was originally developed to perform Brute-force attacks against Access Points (AP) configured with Extensible Authentication Protocol (EAP) using an Active Directory backend database.
-	I recognized if clients/probes were configured to check server side certificates the traditional EvilTwin attack vector would no longer be feasible and a second avenue would need to exists.
+	WiFiSuite was originally developed to perform Brute-force attacks against Access Points (AP) 
+	configured with Extensible Authentication Protocol (EAP) using an Active Directory backend database.
+	I recognized if clients/probes were configured to check server side certificates the traditional 
+	EvilTwin attack vector would no longer be feasible and a second avenue would need to exists.
 
-	Often us Pentesters perform Password Sprays on internal engagements against hosts running the Server Message Block (SMB) service. Considering EAP is typically configured with only a username and password for authentication backed by Active Directory. I asked myself “why not perform a Password Spray against those same high quality user passwords as SMB?”  
-	Tbh probably because I couldn’t find a tool out there that already did this, hence why I began development. 
+	Often us Pentesters perform Password Sprays on internal engagements against hosts running the 
+	Server Message Block (SMB) service. Considering EAP is typically configured with only a username and 
+	password for authentication backed by Active Directory. 
+	I asked myself “why not perform a Password Spray against those same high quality user passwords as SMB?”  
 	
-	Admittedly, I discovered performing a Password Spray over WiFi is MUCH slower than on the wire, but it’s a first step and hopefully this process can become more efficient with some clever ideas and engineering. 
+	Tbh probably because I couldn’t find a tool out there that already did this, hence why I began development. 
+	Admittedly, I discovered performing a Password Spray over WiFi is MUCH slower than on the wire, but it’s a first step 	      and hopefully this process can become more efficient with some clever ideas and engineering. 
 
 
 ## :heavy_exclamation_mark: Requirements
@@ -40,11 +45,14 @@
     wpa_supplicant
     
 # Installation troubleshooting:
-    # Error(s) Rasised: 
-   	 Bad key "patch.force_edgecolor"
+    '''
+    Error(s) Rasised: 
+    Bad key "patch.force_edgecolor"
+    '''
+    '''
     # Resolution:
-    	 pip install matplotlib --upgrade
-
+    pip install matplotlib --upgrade
+    '''
  
 ## :octocat: Credits
 	Contributor:  Bill Harshbarger 'https://github.com/bharshbarger'
