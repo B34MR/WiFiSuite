@@ -26,9 +26,9 @@
     
 # Installation troubleshooting:
     # Error(s) Rasised: 
-    # Bad key "patch.force_edgecolor"
-    # Rsolution:
-    # pip install matplotlib --upgrade
+   	 # Bad key "patch.force_edgecolor"
+    # Resolution:
+    	# pip install matplotlib --upgrade
 
  
 
