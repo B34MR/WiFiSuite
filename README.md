@@ -24,8 +24,8 @@
     	cd WiFiSuite
     	python setup.py install --record install.log 
 ##
-	# cd wifisuite/
-	# python wifisuite.py
+	cd wifisuite/
+	python wifisuite.py
 	Output of Successful Installation:
 	       [i] Directory found: data/
  	       [!] Database not found: data/WiFiSuite.db
