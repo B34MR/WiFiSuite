@@ -19,11 +19,11 @@
 	Kali 2016.1 or Kali 2016.2 rolling. 
 	External WiFi card, known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
     
-# Installation:
+## Installation:
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
     	cd WiFiSuite
     	python setup.py install --record install.log 
-#
+##
 	# cd wifisuite/
 	# python wifisuite.py
 	Output of Successful Installation:
@@ -32,11 +32,11 @@
  	       [i] Created Datebase: data/WiFiSuite.db
  	       [i] Database instantiated
 
-# Uninstall:
+## Uninstall:
     # cd WiFiSuite
     # cat install.log | xargs rm -rf
 
-# Dependencies:
+## Dependencies:
     netifaces
     python-pip 
     python-dev
@@ -44,10 +44,10 @@
     scapy    
     wpa_supplicant
     
-# Installation troubleshooting:
+## Installation troubleshooting:
     Error(s) Rasised: 
     Bad key "patch.force_edgecolor"
-#
+    
     # Resolution:
     pip install matplotlib --upgrade
  
