@@ -24,20 +24,17 @@
     	cd WiFiSuite
     	python setup.py install --record install.log 
 #
-``` # cd wifisuite/
-    # python wifisuite.py
-    OUTPUT:
-	[i] Directory found: data/
- 	[!] Database not found: data/WiFiSuite.db
- 	[i] Created Datebase: data/WiFiSuite.db
- 	[i] Database instantiated
-```
+	# cd wifisuite/
+	# python wifisuite.py
+	Output of Successful Installation:
+	       [i] Directory found: data/
+ 	       [!] Database not found: data/WiFiSuite.db
+ 	       [i] Created Datebase: data/WiFiSuite.db
+ 	       [i] Database instantiated
 
 # Uninstall:
-```
     # cd WiFiSuite
     # cat install.log | xargs rm -rf
-```
 
 # Dependencies:
     netifaces
@@ -48,14 +45,11 @@
     wpa_supplicant
     
 # Installation troubleshooting:
-    '''
     Error(s) Rasised: 
     Bad key "patch.force_edgecolor"
-    '''
-    '''
+#
     # Resolution:
     pip install matplotlib --upgrade
-    '''
  
 ## :octocat: Credits
 	Contributor:  Bill Harshbarger 'https://github.com/bharshbarger'
