@@ -20,10 +20,9 @@
 	External WiFi card, known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
     
 # Installation:
-``` git clone https://github.com/NickSanzotta/WiFiSuite.git
-    cd WiFiSuite
-    python setup.py install --record install.log 
-```
+	git clone https://github.com/NickSanzotta/WiFiSuite.git
+    	cd WiFiSuite
+    	python setup.py install --record install.log 
 #
 ``` # cd wifisuite/
     # python wifisuite.py
