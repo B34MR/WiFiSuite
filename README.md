@@ -48,13 +48,13 @@
     Error(s) Rasised: 
     Bad key "patch.force_edgecolor"
     
-    # Resolution:
+    Resolution:
     pip install matplotlib --upgrade
  
 ## :octocat: Credits
-	Contributor:  Bill Harshbarger 'https://github.com/bharshbarger'
-        Inspiration:  byt3bl33d3r 'https://github.com/byt3bl33d3r/CrackMapExec'
-	QA Testers:   jstines, sho-luv, dissect0r
+	Contributor(s):             Bill Harshbarger 'https://github.com/bharshbarger'
+	Inspiration (Database):     byt3bl33d3r 'https://github.com/byt3bl33d3r/CrackMapExec'
+	Beta Testers:               jstines, sho-luv, dissect0r
 
 ## Disclaimer
 
