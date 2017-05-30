@@ -90,16 +90,21 @@
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-C.gif)
 ##
-* ENUM: Capture “user identities” from Access Points running PEAP EAP. This module will send de-authentication packets to the 	     desired Access Point and then sniff for clear text user identities.
+* ENUM: Capture “user identities” from Access Points running PEAP EAP. This module will send de-authentication packets to the 	      desired Access Point and then sniff for clear text user identities.
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteENUM-A.gif)
 ##
 * SPRAY (EAP): Perform a EAP Password Spray against across a list of user accounts using a single password.
+	       [*] Tip SSID(s) are case sensitive!
 	       
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSPRAYEAP-A.gif)
 ##
-    
-    
- 
+
+* CONNECT (EAP): Connect to an EAP Access Point with username and password authentication, after connection has completed 
+		 open a new console tab to interact with the network. Shutdown connection cleanly to avoid future 			 connectivity issues.
+	         [*] Tip SSID(s) are case sensitive!
+
+     ![]( https://github.com/NickSanzotta/img/blob/master/WiFiSuiteCONNECT-A.gif)
+
 ## :octocat: Credits
 	Contributor(s):             Bill Harshbarger 'https://github.com/bharshbarger'
 	Inspiration (Database):     byt3bl33d3r 'https://github.com/byt3bl33d3r/CrackMapExec'
