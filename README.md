@@ -50,6 +50,28 @@
     Resolution:
     pip install matplotlib --upgrade
 
+## Average Brute-force time per WiFi Interface:
+    While developing this tool, I discovered Brute-force timings were dependent upon 
+    Operating System, Signal Stregnth and Wireless Interface Make/Model.
+    Below are some rough estimates based on my testing:
+    
+    Raspberry Pi 3 Model B w/ Raspbian
+    Elapsed Time with failure: 3.9s - 4.0s
+    Elapsed Time with Success: 0.9s - 1.0s
+    
+    TP-Link Model TL-WN722N w/ Kali 2016.2 Virtual Machine
+    Elapsed Time with failure: 6.0s - 6.1s
+    Elapsed Time with Success: 2.8s - 2.9s
+    
+    Alfa Model AWUS036NH w/ Kali 2016.2 Virtual Machine
+    Elapsed Time with failure: 6.8s - 6.9s
+    Elapsed Time with Success: 3.6s - 3.7s
+    
+    Alfa Model AWUS051NH v.2 w/ Kali 2016.2 Virtual Machine
+    Elapsed Time with failure: 14.7s - 14.9s
+    Elapsed Time with Success: 11.3s - 11.6s
+
+
 ## :book: Cheat Sheet
     * SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     * ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
