@@ -21,11 +21,7 @@
 ## Installation
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
-	python setup.py install --record install.log
-
-![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
-
-	
+	python setup.py install --record install.log	
 ##
 	cd wifisuite/
 	python wifisuite.py
@@ -34,6 +30,8 @@
  	       [!] Database not found: data/WiFiSuite.db
  	       [i] Created Datebase: data/WiFiSuite.db
  	       [i] Database instantiated
+
+![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
 
 ## Uninstall
     cd WiFiSuite
