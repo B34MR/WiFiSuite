@@ -30,8 +30,6 @@
  	       [!] Database not found: data/WiFiSuite.db
  	       [i] Created Datebase: data/WiFiSuite.db
  	       [i] Database instantiated
-##
-   ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
 
 ## Uninstall
     cd WiFiSuite
