@@ -51,7 +51,7 @@
     pip install matplotlib --upgrade
 
 ## Average Brute-force time per WiFi Interface:
-    While developing this tool, I discovered Brute-force timings were dependent upon 
+    While developing this tool, I discovered Brute-force timings may be dependent upon 
     Operating System, Signal Stregnth and Wireless Interface Make/Model.
     Below are some rough estimates based on my testing:
     
