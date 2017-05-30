@@ -9,10 +9,10 @@
 	Server Message Block (SMB) service. Common EAP configurations use the same usernames and passwords 
 	as an SMB service would on the internal network.
 	
-	WiFiSuite leverages commonality between EAP and SMB by performing a brute-force attack against Access Points running 
-	EAP with an Active Directory database. The type of brute-force attack is tailored to perform 
-	a single password guess across a list of user accounts, this is style of brute-force attack if 
-	often called a ‘Password Spray’
+	WiFiSuite leverages commonality between EAP and SMB by performing a brute-force attack against 
+	Access Points running EAP with an Active Directory database. The type of brute-force attack is 
+	tailored to perform a single password guess across a list of user accounts, this particular style
+	of brute-force attack if often called a ‘Password Spray’
 
 ## :heavy_exclamation_mark: Requirements
 	Kali 2016.1 or Kali 2016.2 rolling. 
