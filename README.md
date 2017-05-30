@@ -21,7 +21,12 @@
 ## Installation
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
-	python setup.py install --record install.log 
+	python setup.py install --record install.log
+
+Reference-style: 
+![alt text][logo]
+[logo]: https://github.com/NickSanzotta/img/blob/master/Installationc.gif "WiFiSuite Installation"
+	
 ##
 	cd wifisuite/
 	python wifisuite.py
