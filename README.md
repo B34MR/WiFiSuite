@@ -23,9 +23,8 @@
 	cd WiFiSuite
 	python setup.py install --record install.log
 
-Reference-style: 
-![alt text][logo]
-[logo]: https://github.com/NickSanzotta/img/blob/master/Installationc.gif "WiFiSuite Installation"
+![](https://github.com/NickSanzotta/img/blob/master/Installationc.gif)
+
 	
 ##
 	cd wifisuite/
