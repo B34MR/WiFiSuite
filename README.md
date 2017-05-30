@@ -85,6 +85,14 @@
     * MAC (Randomize):python wifisuite.py -iwlan0 mac
     * MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
     * DATABASE:       python wifisuite.py database
+    
+##
+* SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
+    ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-A.gif)
+##
+
+    
+    
  
 ## :octocat: Credits
 	Contributor(s):             Bill Harshbarger 'https://github.com/bharshbarger'
