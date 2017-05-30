@@ -93,7 +93,7 @@
 
 * SPRAY (EAP): Perform a EAP Password Spray against across a list of user accounts using a single password.
 	       
-     ![](https://)
+     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSPRAYEAP-A.gif)
 ##
     
     
