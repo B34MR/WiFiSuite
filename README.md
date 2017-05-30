@@ -88,7 +88,7 @@
     
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
-     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-A.gif)
+     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-B.gif)
 ##
 
 * SPRAY (EAP): Perform a EAP Password Spray against across a list of user accounts using a single password.
