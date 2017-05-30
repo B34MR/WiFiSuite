@@ -23,7 +23,7 @@
 	cd WiFiSuite
 	python setup.py install --record install.log
 
-![](https://github.com/NickSanzotta/img/blob/master/Installationc.gif)
+![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
 
 	
 ##
