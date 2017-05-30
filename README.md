@@ -19,6 +19,7 @@
 	External WiFi card, known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
     
 ## Installation
+	apt-get install scapy
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
 	python setup.py install --record install.log	
@@ -44,11 +45,12 @@
     wpa_supplicant
     
 ## Installation troubleshooting
-    Error(s) Rasised: 
-    Bad key "patch.force_edgecolor"
+    Error(s) Rasised: Bad key "patch.force_edgecolor"
+    Resolution: pip install matplotlib --upgrade
     
-    Resolution:
-    pip install matplotlib --upgrade
+    Error: You received an 'Attribute' error, while running WiFiSuite ENUM.
+    Resolution: apt-get install scapy (Even if Scapy is already installed on Kali 2016.2)
+    
 
 ## Average Brute-force time per WiFi Interface
     While developing this tool, I discovered Brute-force timings may be dependent upon 
