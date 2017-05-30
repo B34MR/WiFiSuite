@@ -31,7 +31,7 @@
  	       [i] Created Datebase: data/WiFiSuite.db
  	       [i] Database instantiated
 ##
-	![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
+   ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteInstall-A.gif)
 
 ## Uninstall
     cd WiFiSuite
@@ -88,7 +88,7 @@
     
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
-	![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-A.gif)
+     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-A.gif)
 ##
 
     
