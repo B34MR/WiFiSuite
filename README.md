@@ -88,7 +88,7 @@
     
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
-     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-B.gif)
+     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-C.gif)
 ##
 * ENUM: Capture “user identities” from Access Points running PEAP EAP. This module will send de-authentication packets to the 	     desired Access Point and then sniff for clear text user identities.
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteENUM-A.gif)
