@@ -18,7 +18,7 @@
 	Kali 2016.1 or Kali 2016.2 rolling. 
 	External WiFi card, known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
     
-## Installation:
+## Installation
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
 	python setup.py install --record install.log 
@@ -31,11 +31,11 @@
  	       [i] Created Datebase: data/WiFiSuite.db
  	       [i] Database instantiated
 
-## Uninstall:
+## Uninstall
     cd WiFiSuite
     cat install.log | xargs rm -rf
 
-## Dependencies:
+## Dependencies
     netifaces
     python-pip 
     python-dev
@@ -43,14 +43,14 @@
     scapy    
     wpa_supplicant
     
-## Installation troubleshooting:
+## Installation troubleshooting
     Error(s) Rasised: 
     Bad key "patch.force_edgecolor"
     
     Resolution:
     pip install matplotlib --upgrade
 
-## Average Brute-force time per WiFi Interface:
+## Average Brute-force time per WiFi Interface
     While developing this tool, I discovered Brute-force timings may be dependent upon 
     Operating System, Signal Stregnth and Wireless Interface Make/Model.
     Below are some rough estimates based on my testing:
