@@ -1,18 +1,17 @@
 ![Supported Python versions](https://img.shields.io/badge/python-2.7-blue.svg)
 # WiFiSuite     
-	WiFiSuite was originally developed to perform Brute-force attacks against Access Points (AP) 
-	configured with Extensible Authentication Protocol (EAP) using an Active Directory database.
-	I recognized if clients/probes were configured to check server side certificates the traditional 
-	EvilTwin attack vector would no longer be feasible and a second avenue would need to exists.
+	WiFiSuite was developed to perform Brute-force attacks against Access Points (AP) configured 
+	with Extensible Authentication Protocol (EAP) using an Active Directory database. 
+	If clients/probes were configured to check for server side certificates the traditional 
+	EvilTwin attack vector would no longer be feasible, and a second attack vector would need to exists.
 
-	Often us Pentesters perform Password Sprays on internal engagements against hosts running the 
-	Server Message Block (SMB) service. Considering EAP's authentication is typically configured with only a username and 
-	password backed by Active Directory.
-	I asked myself “why not perform a Password Spray against those same "high quality" user passwords as we do with SMB?”  
-	Tbh probably because I couldn’t find a tool out there that already did this, hence why I began development. 
-	Admittedly, I discovered performing a Password Spray over WiFi is MUCH slower than on the wire, but it’s a 
-	first step and hopefully this process can become more efficient with some clever ideas and engineering. 
-
+	Often Pentesters perform Password Sprays on internal engagements against hosts running the 
+	Server Message Block (SMB) service. 
+	Common EAP configurations use the same usernames and passwords as an SMB service would on the internal network. 
+	So why not perform a Password Spray against those same "high quality" user passwords as we do with SMB?
+	For one I couldn’t find a tool out there that performed this type of attack, hence why I began development. 
+	Secondly, I discovered performing a Password Spray over WiFi is MUCH slower than on the wire, but it’s a 
+	step in uncharted territory and hopefully this process will evolve to become more efficient over time.
 
 ## :heavy_exclamation_mark: Requirements
 	Kali 2016.1 or Kali 2016.2 rolling. 
