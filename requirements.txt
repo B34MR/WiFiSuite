@@ -1,3 +1,8 @@
-wpa_supplicant
-psutil
 netifaces
+psutil
+scapy
+theme
+threading
+twisted
+txdbus
+wpa_supplicant
