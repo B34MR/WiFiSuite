@@ -25,6 +25,7 @@ try:
 	from modules import openconnect
 	from modules import macchange
 	from modules import database
+	from modules import eviltwin
 
 except Exception as e:
 	print(' [!] Error: ' + str(e))
@@ -48,6 +49,7 @@ def main():
 	seconds = args.seconds
 	location = args.location
 	macaddress = args.mac
+	hostname = args.hostname
 	# EAP Cert Variables
 	# ca_cert = '/opt/my_scripts/ProjectEAP/eapSpray/RadiusServer.pem' 
 	server_cert = args.server_cert # Not a requirement, if defined it must point to correct ca_cert else connection will fail.
@@ -162,6 +164,18 @@ def main():
 					reactor.callFromThread(reactor.stop)
 			lc = task.LoopingCall(check_stop_flag)
 			lc.start(10)
+	elif mode in 'eviltwin':
+		# Consider placing macchange inside the evilTwin class.
+		if macaddress:
+			macchange.macManual(interface0, macaddress)
+		elif not macaddress:
+			macchange.macRandom(interface0)
+		# Time not needed, but provides smoother exit.
+		time.sleep(.5)
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, hostname).start()
+		# Time not needed, but provides smoother exit.
+		time.sleep(.5) 
+		reactor.callFromThread(reactor.stop)
 	elif mode in 'connect':
 		'''Determines if Connection will be EAP or WPA by checking if the USER parameter is present'''
 		if user:

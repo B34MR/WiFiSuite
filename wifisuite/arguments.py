@@ -58,9 +58,10 @@ def parse_args():
   cheat_sheet = '\n' + colors.blue + ' Cheat Sheet' + colors.normal + """
     SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
-    SPRAY (EAP):    python wifisuite.py -iwlan0 -s"RadiusX" -u data/users.txt -pWelcome1 spray
-    SPRAY (WPA):    python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p data/passwords.txt spray
-    CONNECT (EAP):  python wifisuite.py -iwlan0 -s"RadiusX" -ubeamr -pWelcome1 connect
+    SPRAY (EAP):    python wifisuite.py -iwlan0 -s"Corp WiFi" -u data/users.txt -pWelcome1 spray
+    SPRAY (WPA):    python wifisuite.py -iwlan0 -s"Corp Hotspot" -p data/passwords.txt spray
+    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:84 -c4 --hostname="Corp AP" eviltwin 
+    CONNECT (EAP):  python wifisuite.py -iwlan0 -s"Corp WiFi" -ubeamr -pWelcome1 connect
     CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
     CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
     MAC (Randomize):python wifisuite.py -iwlan0 mac
@@ -76,8 +77,8 @@ def parse_args():
 
   # MODULES
   mode_group = parser.add_argument_group(colors.blue + ' Modules' + colors.normal)
-  mode_group.add_argument('mode', choices=['scan', 'enum', 'spray', 'connect', 'mac','database'], type=str.lower,\
-  metavar='SCAN, ENUM, SPRAY, CONNECT, MAC, DATABASE', default='scan', help='')
+  mode_group.add_argument('mode', choices=['scan', 'enum', 'spray', 'eviltwin', 'connect', 'mac','database'], type=str.lower,\
+  metavar='SCAN, ENUM, SPRAY, EVILTWIN, CONNECT, MAC, DATABASE', default='scan', help='')
 
   # INTERFACE
   interface_group = parser.add_argument_group(colors.blue + ' Interface' + colors.normal)
@@ -93,6 +94,11 @@ def parse_args():
   enum_group.add_argument('-d','--deauth', type=str, metavar='', help='')
   enum_group.add_argument('--packets', type=int, metavar='', default=30, help='')
   enum_group.add_argument('--seconds', type=int, metavar='', default=360, help='')
+
+  #EVILTWIN OPTIONS
+  eviltwin_group = parser.add_argument_group(colors.blue + 'EVILTWIN' + colors.normal)
+  eviltwin_group.add_argument('--hostname', type=str, metavar='', help='')
+
 
   # SPRAY OPTIONS
   spray_group = parser.add_argument_group(spray_help)
