@@ -1,3 +1,4 @@
+hostapd-wpe
 netifaces
 psutil
 scapy
