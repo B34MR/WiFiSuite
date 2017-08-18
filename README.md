@@ -1,18 +1,6 @@
 ![Supported Python versions](https://img.shields.io/badge/python-2.7-blue.svg)
 # WiFiSuite     
-	WiFiSuite was developed to perform Brute-force attacks against Access Points (AP) configured 
-	with Extensible Authentication Protocol (EAP) using an Active Directory database. 
-	If clients/probes were configured to check for server side certificates the traditional 
-	EvilTwin attack vector would no longer be feasible, and a second attack vector would need to exists.
-
-	Often Pentesters perform brute-force attacks on internal engagements against hosts running the 
-	Server Message Block (SMB) service. Common EAP configurations use the same usernames and passwords 
-	as an SMB service would on the internal network.
-	
-	WiFiSuite leverages the commonality between EAP and SMB by performing a brute-force attack against 
-	Access Points running EAP with an Active Directory database. The type of brute-force attack is 
-	tailored to perform a single password guess across a list of user accounts, this particular style
-	of brute-force attack if often called a ‘Password Spray’
+	WiFiSuite is a wireless auditing platform for Pentesters.
 
 ## :heavy_exclamation_mark: Requirements
 	Kali 2016.1 or Kali 2016.2 rolling. 
