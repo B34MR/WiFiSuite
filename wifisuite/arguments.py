@@ -88,7 +88,7 @@ def parse_args():
     DATABASE:       python wifisuite.py database
    """
   # Custom Help
-  Custom_help = general_help + scan_help + enum_help + spray_help + cheat_sheet
+  Custom_help = general_help + scan_help + enum_help + spray_help + eviltwin_help + cheat_sheet
 
   # Create Parser
   parser = argparse.ArgumentParser(formatter_class=HelpFormatter, description=' '+
