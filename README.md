@@ -37,6 +37,7 @@
     cat install.log | xargs rm -rf
 
 ## Dependencies
+    hostapd-wpe
     netifaces
     python-pip 
     python-dev
@@ -75,17 +76,17 @@
 
 
 ## :book: Cheat Sheet
-    * SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
-    * ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
-    * SPRAY (EAP):    python wifisuite.py -iwlan0 -s"RadiusX" -u data/users.txt -pWelcome1 spray
-    * SPRAY (WPA):    python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p data/passwords.txt spray
-    * CONNECT (EAP):  python wifisuite.py -iwlan0 -s"RadiusX" -ubeamr -pWelcome1 connect
-    * CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
-    * CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
-    * MAC (Randomize):python wifisuite.py -iwlan0 mac
-    * MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
-    * DATABASE:       python wifisuite.py database
-    
+    SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
+    ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
+    SPRAY (EAP):    python wifisuite.py -iwlan0 -s"Corp WiFi" -u data/users.txt -pWelcome1 spray
+    SPRAY (WPA):    python wifisuite.py -iwlan0 -s"Corp Hotspot" -p data/passwords.txt spray
+    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" eviltwin 
+    CONNECT (EAP):  python wifisuite.py -iwlan0 -s"Corp WiFi" -ubeamr -pWelcome1 connect
+    CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
+    CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
+    MAC (Randomize):python wifisuite.py -iwlan0 mac
+    MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
+    DATABASE:       python wifisuite.py database
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-C.gif)
