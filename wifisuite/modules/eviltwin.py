@@ -5,7 +5,7 @@
 # Version: v 1.08162017
 
 try:
-	import os, sys, time, threading
+	import os, sys, time, signal, threading
 	from subprocess import Popen, PIPE
 	from theme import *
 except Exception as e:
@@ -42,6 +42,13 @@ class evilTwin(threading.Thread):
 		for line in iter(p1.stdout.readline, ''):
 		    sys.stdout.write(line)
 		    # f.write(line)
+		
+		# Obtain hostapd-wpe Process ID
+		# global eviltwin_pid
+		# eviltwin_pid=p1.pid
+		# raw_input(red('!') + 'Press Enter to close\n\n')
+		# # Send the signal terminate HTTPS Serverprocess
+		# os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
 	
 	def dependency_check(self):
 		'''Checks if hostapd-wpe is installed, if not installs it'''
@@ -88,12 +95,24 @@ class evilTwin(threading.Thread):
 		print('     AP Interface: %s' % (self.wirelessInt))
 		print('     SSID: %s' % (self.ssid))
 		print('     Channel: %s' % (self.channel))
-		print('     Server Cert: %s' % (self.server_cert))
-		print('     Private Key: %s' % (self.private_key))
-
+		print('     Certificate Name: %s' % (self.certname))
+		# print('     Server Cert Path: %s' % (self.server_cert))
+		# print('     Private Key Path: %s' % (self.private_key))
+		# Design Reference: 
+		# Line4: # interface=wlan0
+		# Line7: # eap_user_file=/etc/hostapd-wpe/hostapd-wpe.eap_user
+		# Line8: # ca_cert=/etc/hostapd-wpe/certs/ca.pem
+		# Line9: # server_cert=/etc/hostapd-wpe/certs/server.pem
+		# Line10:# private_key=/etc/hostapd-wpe/certs/server.key
+		# Line11:# private_key_passwd=whatever
+		# Line12:# dh_file=/etc/hostapd-wpe/certs/dh
+		# Line15:# ssid=hostapd-wpe
+		# Line16:# channel=1
+		
 		# Save new hostapd-wpe config file in WiFiSuite's data/hostapd-wpe directory
 		with open('data/hostapd-wpe/hostapd-wpe.conf', 'w') as f1:
 		    f1.writelines( data )
+
 
 	def sslCert(self, country, state, city, company, orgUnit, fqdn, email):
 		'''Create SSL Cert with Specified Values '''
@@ -113,14 +132,3 @@ class evilTwin(threading.Thread):
 		# for line in iter(p1.stdout.readline, ''):
 		#     sys.stdout.write(line)
 		print(green('*') + 'New SSL Certificate Created:')
-
-		# Design Reference: 
-		# Line4: # interface=wlan0
-		# Line7: # eap_user_file=/etc/hostapd-wpe/hostapd-wpe.eap_user
-		# Line8: # ca_cert=/etc/hostapd-wpe/certs/ca.pem
-		# Line9: # server_cert=/etc/hostapd-wpe/certs/server.pem
-		# Line10:# private_key=/etc/hostapd-wpe/certs/server.key
-		# Line11:# private_key_passwd=whatever
-		# Line12:# dh_file=/etc/hostapd-wpe/certs/dh
-		# Line15:# ssid=hostapd-wpe
-		# Line16:# channel=1

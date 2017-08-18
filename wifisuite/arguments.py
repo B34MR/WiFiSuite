@@ -16,7 +16,7 @@ def parse_args():
   cls()
   # General Help
   general_help = colors.blue + ' Modules' + colors.normal + \
-  '\n' + '   SCAN, ENUM, SPRAY, CONNECT, MAC, DATABASE\n' + \
+  '\n' + '   SCAN, ENUM, SPRAY, EVILTWIN, CONNECT, MAC, DATABASE\n' + \
   '\n' +colors.blue + ' Interface' + colors.normal + """
     [-i, --interface] Defines interface ex: wlan0
   """
@@ -44,21 +44,21 @@ def parse_args():
   # EVILTWIN Help
   eviltwin_help = '\n'+ colors.blue + ' EVILTWIN' + colors.normal + """
     Usage Example: 
-    wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname='WiFISuite DMEO' eviltwin
+    wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname='WiFISuite' eviltwin
 
     Basic Options:
-    [-s, --ssid] Define evil access point's SSID ex: --ssid New Corp WiFi]
-    [-m ] Define evil access point's MAC address ex: -m 66:55:44:AB:40:88]
-    [-c, --channel] Define evil access point's channel ex: --channel 4]
-    [--certname] Define the TLS certificate's name (Tip: This name is typical seen by the end user) ex: WiFiSuite]
+    [-s, --ssid] Define evil access point's SSID ex: --ssid New Corp WiFi
+    [-m ] Define evil access point's MAC address ex: -m 66:55:44:AB:40:88
+    [-c, --channel] Define evil access point's channel ex: --channel 4
+    [--certname] Define the TLS certificate's name (Tip: Seen by the end user) ex: WiFiSuite
 
-    Advanced Options: (These options all have default values assigned to them so they are not required)
-    [--country] Define country listed on the evil access point's TLS certificate ex: --country=US]
-    [--state] Define state listed on the evil access point's TLS certificate ex: --state=NY]
-    [--city] Define city listed on the evil access point's TLS certificate ex: --city=NY]
-    [--company] Define company listed on the evil access point's TLS certificate ex: --company=NY]
-    [--ou] Define organizational unit listed on the evil access point's TLS certificate ex: --ou=IT]
-    [--email] Define email address listed on the evil access point's TLS certificate ex: --email=support@wifisuite.com]
+    Advanced Options: (Default values assigned)
+    [--country] Define country listed on the evil access point's TLS certificate ex: --country=US
+    [--state] Define state listed on the evil access point's TLS certificate ex: --state=NY
+    [--city] Define city listed on the evil access point's TLS certificate ex: --city=NY
+    [--company] Define company listed on the evil access point's TLS certificate ex: --company=NY
+    [--ou] Define organizational unit listed on the evil access point's TLS certificate ex: --ou=IT
+    [--email] Define email address listed on the evil access point's TLS certificate ex: --email=it@wifisuite.com
     """
   # SPRAY/CONNECT Help
   spray_help = '\n' + colors.blue + ' SPRAY/CONNECT' + colors.normal + """
@@ -79,7 +79,7 @@ def parse_args():
     ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
     SPRAY (EAP):    python wifisuite.py -iwlan0 -s"Corp WiFi" -u data/users.txt -pWelcome1 spray
     SPRAY (WPA):    python wifisuite.py -iwlan0 -s"Corp Hotspot" -p data/passwords.txt spray
-    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite.local" eviltwin 
+    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" eviltwin 
     CONNECT (EAP):  python wifisuite.py -iwlan0 -s"Corp WiFi" -ubeamr -pWelcome1 connect
     CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
     CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
