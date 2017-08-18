@@ -38,7 +38,7 @@ def main():
 	Queue_user = Queue(maxsize=0) #CHECK queue may remove this feature.
 	Queue_password = Queue(maxsize=0) #CHECK queue may remove this feature.
 
-    # Argpparse Variables 
+    # Argpparse Vars 
 	mode = args.mode
 	ssid = args.ssid
 	user = args.user
@@ -49,12 +49,20 @@ def main():
 	seconds = args.seconds
 	location = args.location
 	macaddress = args.mac
-	hostname = args.hostname
-	# EAP Cert Variables
+	# EAP Cert Vars
 	# ca_cert = '/opt/my_scripts/ProjectEAP/eapSpray/RadiusServer.pem' 
 	server_cert = args.server_cert # Not a requirement, if defined it must point to correct ca_cert else connection will fail.
 	server_cert_path = ''
 	client_cert = ''
+	#EvilTwin Vars
+	certname = args.certname
+	country = args.country
+	state = args.state
+	city = args.city
+	company = args.company
+	ou = args.ou
+	email = args.email
+
 
 	# Launch DATABASE module if called from CLI.
 	if mode in 'database':
@@ -172,7 +180,7 @@ def main():
 			macchange.macRandom(interface0)
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, hostname).start()
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, country, state, city, company, ou, email).start()
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)

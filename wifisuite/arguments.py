@@ -23,7 +23,7 @@ def parse_args():
   # SCAN Help
   scan_help = '\n' + colors.blue + ' SCAN' + colors.normal + """
     Usage Example: 
-    eapsuite.py -i wlan0 scan
+    wifisuite.py -i wlan0 scan
     
     Basic Options: 
     [--location] Tag your access point scans with a location: --location CoffeeShop]
@@ -31,7 +31,7 @@ def parse_args():
   # ENUM Help
   enum_help = '\n'+ colors.blue + ' ENUM' + colors.normal + """
     Usage Example: 
-    eapsuite.py enum -i wlan0 -c 4 -d 10:da:43:a8:61:e4
+    wifisuite.py enum -i wlan0 -c 4 -d 10:da:43:a8:61:e4
     
     Basic Options:
     [-c, --channel] Define access point channel for enum mode ex: --channel 11]
@@ -41,10 +41,29 @@ def parse_args():
     [--packets] Define number of deauth packets to send ex: --packets=30]
     [--seconds] Define Duration to Sniff Packets ex: --seconds=360]  
     """
+  # EVILTWIN Help
+  eviltwin_help = '\n'+ colors.blue + ' EVILTWIN' + colors.normal + """
+    Usage Example: 
+    wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname='WiFISuite DMEO' eviltwin
+
+    Basic Options:
+    [-s, --ssid] Define evil access point's SSID ex: --ssid New Corp WiFi]
+    [-m ] Define evil access point's MAC address ex: -m 66:55:44:AB:40:88]
+    [-c, --channel] Define evil access point's channel ex: --channel 4]
+    [--certname] Define the TLS certificate's name (Tip: This name is typical seen by the end user) ex: WiFiSuite]
+
+    Advanced Options: (These options all have default values assigned to them so they are not required)
+    [--country] Define country listed on the evil access point's TLS certificate ex: --country=US]
+    [--state] Define state listed on the evil access point's TLS certificate ex: --state=NY]
+    [--city] Define city listed on the evil access point's TLS certificate ex: --city=NY]
+    [--company] Define company listed on the evil access point's TLS certificate ex: --company=NY]
+    [--ou] Define organizational unit listed on the evil access point's TLS certificate ex: --ou=IT]
+    [--email] Define email address listed on the evil access point's TLS certificate ex: --email=support@wifisuite.com]
+    """
   # SPRAY/CONNECT Help
   spray_help = '\n' + colors.blue + ' SPRAY/CONNECT' + colors.normal + """
     Usage Example: 
-    eapsuite.py spray -i wlan0 -s FreeWiFi -u users.txt -p Summer2017
+    wifisuite.py spray -i wlan0 -s FreeWiFi -u users.txt -p Summer2017
     
     Basic Options: 
     [-s, --ssid] Define SSID ex: --ssid FreeWiFi]
@@ -60,7 +79,7 @@ def parse_args():
     ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
     SPRAY (EAP):    python wifisuite.py -iwlan0 -s"Corp WiFi" -u data/users.txt -pWelcome1 spray
     SPRAY (WPA):    python wifisuite.py -iwlan0 -s"Corp Hotspot" -p data/passwords.txt spray
-    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:84 -c4 --hostname="Corp AP" eviltwin 
+    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite.local" eviltwin 
     CONNECT (EAP):  python wifisuite.py -iwlan0 -s"Corp WiFi" -ubeamr -pWelcome1 connect
     CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
     CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
@@ -97,8 +116,15 @@ def parse_args():
 
   #EVILTWIN OPTIONS
   eviltwin_group = parser.add_argument_group(colors.blue + 'EVILTWIN' + colors.normal)
-  eviltwin_group.add_argument('--hostname', type=str, metavar='', help='')
+  eviltwin_group.add_argument('--certname', type=str, metavar='Default [WiFiSuite]', default = 'WiFiSuite', help='')
 
+  #EVILTWIN ADV OPTIONS
+  eviltwin_group.add_argument('--country', type=str, metavar='Default [US]', default='US', help='')
+  eviltwin_group.add_argument('--state', type=str, metavar='Default [NY]', default = 'NY', help='')
+  eviltwin_group.add_argument('--city', type=str, metavar='Default [NY]', default = 'NY', help='')  
+  eviltwin_group.add_argument('--company', type=str, metavar='Default [WiFISuite, Inc]', default = 'WiFISuite, Inc', help='')
+  eviltwin_group.add_argument('--ou', type=str, metavar='Default [IT]', default = 'IT', help='')
+  eviltwin_group.add_argument('--email', type=str, metavar='Default [support@wifisuite.com]', default = 'supoprt@wifisuite.com', help='')
 
   # SPRAY OPTIONS
   spray_group = parser.add_argument_group(spray_help)
