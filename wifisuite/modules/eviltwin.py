@@ -77,11 +77,13 @@ class evilTwin(threading.Thread):
 		'''Creates Cert and or Hostapd folder(s) if missing'''
 		cert_directory = 'data/certs'
 		hostapd_directory = 'data/hostapd-wpe'
+		eviltwin_directory = 'data/eviltwin'
 		if not os.path.exists(cert_directory):
 			os.makedirs(cert_directory)
-
 		if not os.path.exists(hostapd_directory):
 			os.makedirs(hostapd_directory)
+		if not os.path.exists(eviltwin_directory):
+			os.makedirs(eviltwin_directory)
 
 
 	def sanity_check(self):
@@ -116,6 +118,7 @@ class evilTwin(threading.Thread):
 		data[15]= 'channel=%s\n' % (self.channel)
 		data[8] = 'server_cert=%s\n' % (self.server_cert)
 		data[9] = 'private_key=%s\n' % (self.private_key)
+		data[19] = 'wpe_logfile=data/eviltwin/%s_eviltwin.log\n' % (self.ssid)
 		data[183] = 'hw_mode=%s\n' % (self.band.lower())
 
 
@@ -125,6 +128,7 @@ class evilTwin(threading.Thread):
 		print('     Band: %s' % (self.band))
 		print('     Channel: %s' % (self.channel))
 		print('     Certificate Name: %s' % (self.certname))
+		print('     Creds saved to: data/eviltwin/%s_eviltwin.log' % (self.ssid))
 		# print('     Server Cert Path: %s' % (self.server_cert))
 		# print('     Private Key Path: %s' % (self.private_key))
 		# Design Reference: 
@@ -137,6 +141,7 @@ class evilTwin(threading.Thread):
 		# Line12:# dh_file=/etc/hostapd-wpe/certs/dh
 		# Line15:# ssid=hostapd-wpe
 		# Line16:# channel=1
+		# Line20:# wpe_logfile=somefile              # (Default: ./hostapd-wpe.log)
 		# Line184:# hw_mode=g
 		
 		# Save new hostapd-wpe config file in WiFiSuite's data/hostapd-wpe directory
