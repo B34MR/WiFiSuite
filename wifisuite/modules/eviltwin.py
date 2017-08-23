@@ -170,24 +170,30 @@ class evilTwin(threading.Thread):
 		print('Place holder')
 
 	def certbot_dependency_check(self):
-		print('Place Holder')
-		if True:
-			print('continue')
+		p1 = Popen(['which', 'certbot'], stdout=PIPE)
+		if p1.communicate()[0]:
+			p2 = Popen(["certbot", "--version"], stdout=PIPE)
+			print(blue('i')+'Running %s' % (p2.communicate()[0]))
 		else:
-			return False
-			sys.exit(1)
-
+			print(blue('i')+'Installing certbot ...')
+			p3 = Popen(['apt-get install -y certbot'], shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
+			p3.wait()
+			print(' [*] Installation completed')
+			os.system('which certbot')
+			os.system('certbot --version')
+			print('\n')
+			# print(p2.communicate())
 
 	def certbot(self):
-		self.dependency_check_certbot()
 		if args == 'certbot':
+			self.dependency_check_certbot()
 			print('run certbot, ignore OpenSSL')
 			print('Ensure Port 80 is forwarded from Internal <IP> to external <IP>')
-			print('Create DNS A record for '+ self.certname + ' pointing to external <IP>')
+			print('Create DNS A record for '+ self.certbot + ' pointing to external <IP>')
 			raw_input('Ready?')
-			p1 = Popen(["certbot certonly --standalone --preferred-challenges http -d" + self.certname], stdout=PIPE)
-			print('Saving Certs to: data/certs/live/DOMAIN/')
-			self.server_cert = 'data/certs/live/DOMAIN'
-			self.private_key = 'data/certs/live/DOMAIN'
+			p1 = Popen(["certbot certonly --standalone --preferred-challenges http -d" + self.certbot], stdout=PIPE)
+			print('Saving Certs to: data/certs/DOMAIN/')
+			self.server_cert = 'data/certs/DOMAIN'
+			self.private_key = 'data/certs/DOMAIN'
 		else:
 			print('Run OpenSSL')

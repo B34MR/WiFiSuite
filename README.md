@@ -97,7 +97,7 @@
 ## :octocat: Credits
 	Contributor(s):             Bill Harshbarger 'https://github.com/bharshbarger'
 	Inspiration (Database):     byt3bl33d3r 'https://github.com/byt3bl33d3r/CrackMapExec'
-	Beta Testers:               jstines, sho-luv, dissect0r
+	Beta Testers:               ac3lives, dissect0r, jstines, sho-luv
 
 ## Disclaimer
 
