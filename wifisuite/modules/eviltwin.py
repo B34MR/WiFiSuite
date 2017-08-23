@@ -62,7 +62,7 @@ class evilTwin(threading.Thread):
 			p2 = Popen(["dpkg-query", "-W", "-f", "${version}", "hostapd-wpe"], stdout=PIPE)
 			print(blue('i')+'Running hostapd-wpe %s' % (p2.communicate()[0]))
 		else:
-			print(blue(i)+'Installing hostapd-wpe ...')
+			print(blue('i')+'Installing hostapd-wpe ...')
 			p3 = Popen(['apt-get install -y hostapd-wpe'], shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
 			p3.wait()
 			print(' [*] Installation completed')
