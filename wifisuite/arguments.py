@@ -28,23 +28,10 @@ def parse_args():
     Basic Options: 
     [--location] Tag your access point scans with a location: --location CoffeeShop]
     """
-  # ENUM Help
-  enum_help = '\n'+ colors.blue + ' ENUM' + colors.normal + """
-    Usage Example: 
-    wifisuite.py enum -i wlan0 -c 4 -d 10:da:43:a8:61:e4
-    
-    Basic Options:
-    [-c, --channel] Define access point channel for enum mode ex: --channel 11]
-    [-d, --deauth] Deauthenticate clients for enum mode ex: --deauth 10:10:10:A9:72:E6]
-  
-    Advanced Options:
-    [--packets] Define number of deauth packets to send ex: --packets=30]
-    [--seconds] Define Duration to Sniff Packets ex: --seconds=360]  
-    """
   # EVILTWIN Help
   eviltwin_help = '\n'+ colors.blue + ' EVILTWIN' + colors.normal + """
     Usage Example: 
-    wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname='WiFISuite' eviltwin
+    wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname='WiFISuite' --band b eviltwin
 
     Basic Options:
     [-s, --ssid] Define evil access point's SSID ex: --ssid New Corp WiFi
@@ -61,6 +48,19 @@ def parse_args():
     [--company] Define company listed on the evil access point's TLS certificate ex: --company=NY
     [--ou] Define organizational unit listed on the evil access point's TLS certificate ex: --ou=IT
     [--email] Define email address listed on the evil access point's TLS certificate ex: --email=it@wifisuite.com
+    """
+  # ENUM Help
+  enum_help = '\n'+ colors.blue + ' ENUM' + colors.normal + """
+    Usage Example: 
+    wifisuite.py enum -i wlan0 -c 4 -d 10:da:43:a8:61:e4
+    
+    Basic Options:
+    [-c, --channel] Define access point channel for enum mode ex: --channel 11]
+    [-d, --deauth] Deauthenticate clients for enum mode ex: --deauth 10:10:10:A9:72:E6]
+  
+    Advanced Options:
+    [--packets] Define number of deauth packets to send ex: --packets=30]
+    [--seconds] Define Duration to Sniff Packets ex: --seconds=360]  
     """
   # SPRAY/CONNECT Help
   spray_help = '\n' + colors.blue + ' SPRAY/CONNECT' + colors.normal + """
@@ -81,7 +81,7 @@ def parse_args():
     ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
     SPRAY (EAP):    python wifisuite.py -iwlan0 -s"Corp WiFi" -u data/users.txt -pWelcome1 spray
     SPRAY (WPA):    python wifisuite.py -iwlan0 -s"Corp Hotspot" -p data/passwords.txt spray
-    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" eviltwin 
+    EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" --band b eviltwin 
     CONNECT (EAP):  python wifisuite.py -iwlan0 -s"Corp WiFi" -ubeamr -pWelcome1 connect
     CONNECT (WPA):  python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" -p Password123 connect
     CONNECT (Open): python wifisuite.py -iwlan0 -s"CompanyXYZ Hotspot" connect
@@ -98,8 +98,8 @@ def parse_args():
 
   # MODULES
   mode_group = parser.add_argument_group(colors.blue + ' Modules' + colors.normal)
-  mode_group.add_argument('mode', choices=['scan', 'enum', 'spray', 'eviltwin', 'connect', 'mac','database'], type=str.lower,\
-  metavar='SCAN, ENUM, SPRAY, EVILTWIN, CONNECT, MAC, DATABASE', default='scan', help='')
+  mode_group.add_argument('mode', choices=['scan', 'eviltwin', 'enum', 'spray', 'connect', 'mac','database'], type=str.lower,\
+  metavar='SCAN, EVILTWIN, ENUM, SPRAY, CONNECT, MAC, DATABASE', default='scan', help='')
 
   # INTERFACE
   interface_group = parser.add_argument_group(colors.blue + ' Interface' + colors.normal)
@@ -108,13 +108,6 @@ def parse_args():
   # SCAN OPTIONS
   scan_group = parser.add_argument_group(colors.blue + ' SCAN' + colors.normal)
   scan_group.add_argument('--location', type=str.upper, metavar='', help='')
-
-  # ENUM OPTIONS
-  enum_group = parser.add_argument_group(colors.blue + ' ENUM' + colors.normal)
-  enum_group.add_argument('-c','--channel', type=int, metavar='',default=11, help='')
-  enum_group.add_argument('-d','--deauth', type=str, metavar='', help='')
-  enum_group.add_argument('--packets', type=int, metavar='', default=30, help='')
-  enum_group.add_argument('--seconds', type=int, metavar='', default=360, help='')
 
   #EVILTWIN OPTIONS
   eviltwin_group = parser.add_argument_group(colors.blue + 'EVILTWIN' + colors.normal)
@@ -130,7 +123,14 @@ def parse_args():
   eviltwin_group.add_argument('--company', type=str, metavar='Default [WiFISuite, Inc]', default = 'WiFISuite, Inc', help='')
   eviltwin_group.add_argument('--ou', type=str, metavar='Default [IT]', default = 'IT', help='')
   eviltwin_group.add_argument('--email', type=str, metavar='Default [support@wifisuite.com]', default = 'supoprt@wifisuite.com', help='')
-
+  
+  # ENUM OPTIONS
+  enum_group = parser.add_argument_group(colors.blue + ' ENUM' + colors.normal)
+  enum_group.add_argument('-c','--channel', type=int, metavar='',default=11, help='')
+  enum_group.add_argument('-d','--deauth', type=str, metavar='', help='')
+  enum_group.add_argument('--packets', type=int, metavar='', default=30, help='')
+  enum_group.add_argument('--seconds', type=int, metavar='', default=360, help='')
+  
   # SPRAY OPTIONS
   spray_group = parser.add_argument_group(spray_help)
   spray_group.add_argument('-s','--ssid', type=str, metavar='', help='')

@@ -2,7 +2,7 @@
 # Description: Creates an EAP based access point AKA EvilTwin.
 # Author: Nick Sanzotta
 # Contributors: 
-# Version: v 1.08162017
+# Version: v 1.08252017
 
 try:
 	import os, sys, time, signal, threading

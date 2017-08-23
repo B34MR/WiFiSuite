@@ -146,6 +146,18 @@ def main():
 		seconds = 5
 		apscanT1 = scanner.apScan(location, seconds, supplicantInt0, interface0).start()
 		reactor.callFromThread(reactor.stop)
+	elif mode in 'eviltwin':
+		# Consider placing macchange inside the evilTwin class.
+		if macaddress:
+			macchange.macManual(interface0, macaddress)
+		elif not macaddress:
+			macchange.macRandom(interface0)
+		# Time not needed, but provides smoother exit.
+		time.sleep(.5)
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, band, server_cert, private_key, country, state, city, company, ou, email).start()
+		# Time not needed, but provides smoother exit.
+		time.sleep(.5) 
+		reactor.callFromThread(reactor.stop)
 	elif mode in 'enum':
 		eapEnumT1 = eapenum.eapEnum(deauth, "ff:ff:ff:ff:ff:ff", seconds, packets, interface0, channel).start() 
 		reactor.callFromThread(reactor.stop)
@@ -175,18 +187,7 @@ def main():
 					reactor.callFromThread(reactor.stop)
 			lc = task.LoopingCall(check_stop_flag)
 			lc.start(10)
-	elif mode in 'eviltwin':
-		# Consider placing macchange inside the evilTwin class.
-		if macaddress:
-			macchange.macManual(interface0, macaddress)
-		elif not macaddress:
-			macchange.macRandom(interface0)
-		# Time not needed, but provides smoother exit.
-		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, band, server_cert, private_key, country, state, city, company, ou, email).start()
-		# Time not needed, but provides smoother exit.
-		time.sleep(.5) 
-		reactor.callFromThread(reactor.stop)
+
 	elif mode in 'connect':
 		'''Determines if Connection will be EAP or WPA by checking if the USER parameter is present'''
 		if user:
