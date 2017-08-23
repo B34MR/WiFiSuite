@@ -119,6 +119,8 @@ def parse_args():
   eviltwin_group.add_argument('--certname', type=str, metavar='Default [WiFiSuite]', default = 'WiFiSuite', help='')
 
   #EVILTWIN ADV OPTIONS
+  eviltwin_group.add_argument('--server_cert', type=str, metavar='Default [data/certs/server_cert.pem]', default='data/certs/server_cert.pem', help='')
+  eviltwin_group.add_argument('--private_key', type=str, metavar='Default [data/certs/private_key.pem]', default='data/certs/private_key.pem', help='')
   eviltwin_group.add_argument('--country', type=str, metavar='Default [US]', default='US', help='')
   eviltwin_group.add_argument('--state', type=str, metavar='Default [NY]', default = 'NY', help='')
   eviltwin_group.add_argument('--city', type=str, metavar='Default [NY]', default = 'NY', help='')  
@@ -132,7 +134,7 @@ def parse_args():
   spray_group.add_argument('-u','--user', type=str, metavar='', help='')
   spray_group.add_argument('-p','--password', type=str, metavar='', help='')
   spray_group.add_argument('--client_cert', type=str, metavar='', help='')
-  spray_group.add_argument('--server_cert', type=str, metavar='', help='')
+  # spray_group.add_argument('--server_cert', type=str, metavar='', help='')
   
   # MAC OPTIONS
   mac_group = parser.add_argument_group(colors.blue + ' MAC' + colors.normal)

