@@ -13,7 +13,7 @@ except Exception as e:
 
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
-	 certname, server_cert, private_key,\
+	 certname, band, server_cert, private_key,\
 	 country, state, city, company, ou, email):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
@@ -23,6 +23,7 @@ class evilTwin(threading.Thread):
 		self.ssid = ssid
 		self.channel = channel
 		self.certname = certname
+		self.band = band
 		self.country = country
 		self.state = state
 		self.city = city
@@ -33,6 +34,7 @@ class evilTwin(threading.Thread):
 		self.private_key = private_key
 
 	def run(self):
+		self.datafolders_check()
 		self.sslCert(self.country, self.state, self.city, self.company, self.ou, self.certname, self.email)
 		self.dependency_check()
 		self.hostapd_config()
@@ -71,8 +73,16 @@ class evilTwin(threading.Thread):
 			print('\n')
 			# print(p2.communicate())
 	
-	def create_folder(self):
-		print('Create data/certs & data/hostapd-wpe folder')
+	def datafolders_check(self):
+		'''Creates Cert and or Hostapd folder(s) if missing'''
+		cert_directory = 'data/certs'
+		hostapd_directory = 'data/hostapd-wpe'
+		if not os.path.exists(cert_directory):
+			os.makedirs(cert_directory)
+
+		if not os.path.exists(hostapd_directory):
+			os.makedirs(hostapd_directory)
+
 
 	def sanity_check(self):
 		'''Terminates conflicting processes'''
@@ -106,10 +116,13 @@ class evilTwin(threading.Thread):
 		data[15]= 'channel=%s\n' % (self.channel)
 		data[8] = 'server_cert=%s\n' % (self.server_cert)
 		data[9] = 'private_key=%s\n' % (self.private_key)
+		data[183] = 'hw_mode=%s\n' % (self.band.lower())
+
 
 		print(green('*')+'EvilTwin Details:')
 		print('     AP Interface: %s' % (self.wirelessInt))
 		print('     SSID: %s' % (self.ssid))
+		print('     Band: %s' % (self.band))
 		print('     Channel: %s' % (self.channel))
 		print('     Certificate Name: %s' % (self.certname))
 		# print('     Server Cert Path: %s' % (self.server_cert))
@@ -124,6 +137,7 @@ class evilTwin(threading.Thread):
 		# Line12:# dh_file=/etc/hostapd-wpe/certs/dh
 		# Line15:# ssid=hostapd-wpe
 		# Line16:# channel=1
+		# Line184:# hw_mode=g
 		
 		# Save new hostapd-wpe config file in WiFiSuite's data/hostapd-wpe directory
 		with open('data/hostapd-wpe/hostapd-wpe.conf', 'w') as f1:

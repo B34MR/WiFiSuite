@@ -51,6 +51,8 @@ def parse_args():
     [-m ] Define evil access point's MAC address ex: -m 66:55:44:AB:40:88
     [-c, --channel] Define evil access point's channel ex: --channel 4
     [--certname] Define the TLS certificate's name (Tip: Seen by the end user) ex: WiFiSuite
+    [--band] Define evil access point's WiFi band [A, B, G] ex: --band a
+
 
     Advanced Options: (Default values assigned)
     [--country] Define country listed on the evil access point's TLS certificate ex: --country=US
@@ -117,6 +119,7 @@ def parse_args():
   #EVILTWIN OPTIONS
   eviltwin_group = parser.add_argument_group(colors.blue + 'EVILTWIN' + colors.normal)
   eviltwin_group.add_argument('--certname', type=str, metavar='Default [WiFiSuite]', default = 'WiFiSuite', help='')
+  eviltwin_group.add_argument('--band', choices=['A', 'B', 'G'], type=str.upper, default = 'G', metavar='a, b, g, [Default] G', help='')
 
   #EVILTWIN ADV OPTIONS
   eviltwin_group.add_argument('--server_cert', type=str, metavar='Default [data/certs/server_cert.pem]', default='data/certs/server_cert.pem', help='')

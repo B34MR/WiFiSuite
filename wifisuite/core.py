@@ -59,6 +59,7 @@ def main():
 	server_cert = args.server_cert
 	private_key = args.private_key
 	country = args.country
+	band = args.band
 	state = args.state
 	city = args.city
 	company = args.company
@@ -182,7 +183,7 @@ def main():
 			macchange.macRandom(interface0)
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, server_cert, private_key, country, state, city, company, ou, email).start()
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, band, server_cert, private_key, country, state, city, company, ou, email).start()
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)
