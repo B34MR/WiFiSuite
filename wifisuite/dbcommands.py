@@ -59,6 +59,11 @@ class DB:
         cur.execute("insert into eapcreds (essid, identity, password) values (?,?,?)", \
         (essid, identity, password))
 
+    def eviltwin_commit(self, essid, identity, password):
+        cur = self.conn.cursor()
+        cur.execute("insert into eapcreds (essid, identity, password) values (?,?,?)", \
+            (essid, identity, password))
+
     def wpabrute_commit(self, essid, password):
         cur = self.conn.cursor()
         cur.execute("insert into wpakeys (essid, password) values (?,?)", \

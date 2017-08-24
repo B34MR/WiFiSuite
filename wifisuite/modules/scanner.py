@@ -9,7 +9,7 @@ try:
 	import threading, sched, time, sqlite3, os, sys, signal, re
 	from time import sleep
 	from subprocess import Popen, PIPE, STDOUT 
-	from eapdb import Navigator
+	from database import Navigator
 	# DB CHECK
 	import createdb
 except Exception as e:

