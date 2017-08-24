@@ -68,9 +68,9 @@ class evilTwin(threading.Thread):
 					response = line.split()[1]
 				elif 'jtr' in line:
 					jtr = line.split()[2]
-					print('Identity: %s' % (user))
-					print('John: %s' % (jtr))
-					print('Hashcat: %s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':')))
+					print(' Identity: %s' % (user))
+					print(' John: %s' % (jtr))
+					print(' Hashcat: %s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':')))
 					# Commit to database
 		
 		# Obtain hostapd-wpe Process ID
