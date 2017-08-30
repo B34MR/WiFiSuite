@@ -65,6 +65,7 @@ def main():
 	company = args.company
 	ou = args.ou
 	email = args.email
+	debug = args.debug
 
 
 	# Launch DATABASE module if called from CLI.
@@ -154,7 +155,8 @@ def main():
 			macchange.macRandom(interface0)
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, band, server_cert, private_key, country, state, city, company, ou, email).start()
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, band, server_cert, \
+			private_key, country, state, city, company, ou, email, debug).start()
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)

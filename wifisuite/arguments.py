@@ -48,6 +48,7 @@ def parse_args():
     [--company] Define company listed on the evil access point's TLS certificate ex: --company=NY
     [--ou] Define organizational unit listed on the evil access point's TLS certificate ex: --ou=IT
     [--email] Define email address listed on the evil access point's TLS certificate ex: --email=it@wifisuite.com
+    [--debug] Displays Hostapd-wpe output to STDOUT ex: --debug
     """
   # ENUM Help
   enum_help = '\n'+ colors.blue + ' ENUM' + colors.normal + """
@@ -123,7 +124,8 @@ def parse_args():
   eviltwin_group.add_argument('--company', type=str, metavar='Default [WiFISuite, Inc]', default = 'WiFISuite, Inc', help='')
   eviltwin_group.add_argument('--ou', type=str, metavar='Default [IT]', default = 'IT', help='')
   eviltwin_group.add_argument('--email', type=str, metavar='Default [support@wifisuite.com]', default = 'supoprt@wifisuite.com', help='')
-  
+  eviltwin_group.add_argument('--debug', action='store_true', default ='', help='')
+
   # ENUM OPTIONS
   enum_group = parser.add_argument_group(colors.blue + ' ENUM' + colors.normal)
   enum_group.add_argument('-c','--channel', type=int, metavar='',default=11, help='')
@@ -133,7 +135,7 @@ def parse_args():
   
   # SPRAY OPTIONS
   spray_group = parser.add_argument_group(spray_help)
-  spray_group.add_argument('-s','--ssid', type=str, metavar='', help='')
+  spray_group.add_argument('-s','--ssid', type=str, metavar='', default='WiFiSuite', help='')
   spray_group.add_argument('-u','--user', type=str, metavar='', help='')
   spray_group.add_argument('-p','--password', type=str, metavar='', help='')
   spray_group.add_argument('--client_cert', type=str, metavar='', help='')

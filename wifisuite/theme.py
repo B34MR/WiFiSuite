@@ -6,12 +6,18 @@ Author = 'Nick Sanzotta/@Beamr'
 
 # Colors
 class colors:
-   white = "\033[1;37m"
    normal = "\033[0;00m"
+   # Bold Colors
+   white = "\033[1;37m"
    red = "\033[1;31m"
    blue = "\033[1;34m"
    green = "\033[1;32m"
-   lightblue = "\033[0;34m"
+   # Regular Colors
+   lightgreen="\033[0;32m" 
+   ligtblue = "\033[0;34m"
+   lightred="\033[0;31m"
+   lightyellow="\033[0;33m"
+
 # Symbols
 def blue(symbol):
   blue_symbol = ' [' + colors.blue + symbol + colors.normal + '] ' + colors.normal
@@ -25,6 +31,14 @@ def green(symbol):
 def red(symbol):
   red_symbol = ' [' + colors.red + symbol + colors.normal + '] ' + colors.normal
   return str(red_symbol)
+def white(symbol):
+  white_symbol = ' [' + colors.white + symbol + colors.normal + '] ' + colors.normal
+  return str(white_symbol)
+def normal(symbol):
+  normal_symbol = ' [' + colors.normal + symbol + colors.normal + '] ' + colors.normal
+  return str(normal_symbol)
+
+
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 # Banner
