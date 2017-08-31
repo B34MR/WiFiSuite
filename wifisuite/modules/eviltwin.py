@@ -26,7 +26,7 @@ except Exception as e:
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
 	 certname, public,  band, server_cert, private_key,\
-	 country, state, city, company, ou, email, debug):
+	 country, state, city, company, ou, email, dryrun, debug):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
 		self.interface = interface
@@ -45,6 +45,7 @@ class evilTwin(threading.Thread):
 		self.email = email
 		self.server_cert = server_cert
 		self.private_key = private_key
+		self.dryrun = dryrun
 		self.debug = debug
 		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
 		self.hashcat_log = 'data/eviltwin/%s_%s.hashcat' % (self.ssid, self.log_timestamp)
@@ -57,7 +58,7 @@ class evilTwin(threading.Thread):
 		if not self.public:
 			self.sslCert(self.country, self.state, self.city, self.company, self.ou, self.certname, self.email)
 		else:
-			publicCert = pubc.crtb(self.certname, self.email, self.debug)
+			publicCert = pubc.crtb(self.certname, self.email, self.dryrun, self.debug)
 			publicCert.start()
 			publicCert.join()
 			time.sleep(5)

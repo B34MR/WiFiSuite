@@ -125,6 +125,7 @@ def parse_args():
   eviltwin_group.add_argument('--company', type=str, metavar='Default [WiFISuite, Inc]', default = 'WiFISuite, Inc', help='')
   eviltwin_group.add_argument('--ou', type=str, metavar='Default [IT]', default = 'IT', help='')
   eviltwin_group.add_argument('--email', type=str, metavar='Default [support@wifisuite.com]', default = 'supoprt@wifisuite.com', help='')
+  eviltwin_group.add_argument('--dryrun', action='store_true', default ='', help='')
   eviltwin_group.add_argument('--debug', action='store_true', default ='', help='')
 
   # ENUM OPTIONS

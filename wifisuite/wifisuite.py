@@ -53,8 +53,9 @@ def sanityCheck():
 	'''Runs sanity checks prior to launching core.'''
 	createdb.dbcheck() # ADD if db exists, option to overwrite
 	killProcess('NetworkManager')
+	killProcess('hostapd-wpe') # EvilTwin process sanitization.
 	killProcess('wpa_supplicant')
-	print(blue('i') + 'Sanity checks completed without errors.')
+	print(' [i] Sanity checks completed without errors.')
 
 def run():
 	sanityCheck()
