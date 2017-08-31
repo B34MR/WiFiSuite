@@ -113,6 +113,7 @@ def parse_args():
   #EVILTWIN OPTIONS
   eviltwin_group = parser.add_argument_group(colors.blue + 'EVILTWIN' + colors.normal)
   eviltwin_group.add_argument('--certname', type=str, metavar='Default [WiFiSuite]', default = 'WiFiSuite', help='')
+  eviltwin_group.add_argument('--public', action='store_true', default = '', help='')
   eviltwin_group.add_argument('--band', choices=['A', 'B', 'G'], type=str.upper, default = 'G', metavar='a, b, g, [Default] G', help='')
 
   #EVILTWIN ADV OPTIONS

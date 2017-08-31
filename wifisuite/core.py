@@ -26,6 +26,7 @@ try:
 	from modules import macchange
 	from modules import database
 	from modules import eviltwin
+	from modules import pubc
 
 except Exception as e:
 	print(' [!] Error: ' + str(e))
@@ -66,6 +67,7 @@ def main():
 	ou = args.ou
 	email = args.email
 	debug = args.debug
+	public = args.public
 
 
 	# Launch DATABASE module if called from CLI.
@@ -155,7 +157,7 @@ def main():
 			macchange.macRandom(interface0)
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, band, server_cert, \
+		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, public, band, server_cert, \
 			private_key, country, state, city, company, ou, email, debug).start()
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5) 
