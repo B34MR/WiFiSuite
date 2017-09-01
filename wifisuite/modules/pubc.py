@@ -2,52 +2,61 @@
 # Description:
 # Author: Nick Sanzotta
 # Contributors: 
-# Version: v 1.08312017
+# Version: v 1.09032017
 try:
 	import os, sys, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
+	import SocketServer, SimpleHTTPServer, multiprocessing
 	from theme import *
 except Exception as e:
 	print('\n [!] Error ' +str(e))
 
 class crtb(threading.Thread):
-	def __init__(self, certname, email, dryrun, debug):
+	def __init__(self, certname, email, debug):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
 		self.certname = certname
 		self.email = email
-		self.dryrun = dryrun
 		self.debug = debug
+		self.cwd = os.getcwd()
+		self.webserver_directory = '/var/www/WiFiSuite/'
+		self.port = 80
 
 	def run(self):
 		self.dependency_check()
-		# httpProc.wait()
+		self.datafolders_check()
 
+		# Setup SimpleHTTPServer
+		Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+		httpd = SocketServer.TCPServer(("", self.port), Handler)
+
+		# Launch SimpleHTTPServer in a seperate Process
+		os.chdir(self.webserver_directory)
+		server_process = multiprocessing.Process(target=httpd.serve_forever)
+		server_process.daemon = True
+		server_process.start()
+		print('HTTP Server Launched on Port: %s ' % (self.port))
+
+		# Run Certbot while HTTP Server process is live.
+		p1 = Popen(["certbot", "--webroot", "--non-interactive", "certonly", "--text", "--rsa-key-size", "4096", "--agree-tos", "--webroot-path", "/var/www/WiFiSuite/", "-m " + self.email, "-d " + self.certname], stdout=PIPE, stderr=PIPE)
 		if self.debug:
 			print(white('Debug')+'Certbot STDOUT/STDERR below:')
-		
-		if self.dryrun:
-			p1 = Popen(["certbot", "-n", "--dry-run",  "certonly", "--standalone", "--preferred-challenges", "http", "-m " + self.email, "-d " + self.certname], stdout=PIPE, stderr=PIPE)
-		else:
-			p1 = Popen(["certbot", "-n", "certonly", "--standalone",  "--agree-tos", "-m " + self.email, "-d " + self.certname], stdout=PIPE, stderr=PIPE)
-			# httpProc = Popen(["python", "-m", "SimpleHTTPServer", "80"], stdout=PIPE, stderr=PIPE)
-			# time.sleep(30)
-
-		if self.debug:
-			# print(p1.communicate())
+			# Print STDOUT
 			for line in iter(p1.stdout.readline, ''):
 				sys.stdout.write(line)
-
+			# Print STDERR
 			for line in iter(p1.stderr.readline, ''):
 				sys.stderr.write(line)
-		# else:
 
-		# print('Saving Certs to: data/certs/DOMAIN/')
-		# self.server_cert = 'data/certs/DOMAIN'
-		# self.private_key = 'data/certs/DOMAIN'
+		# Terminate HTTP Server process
+		server_process.terminate()
+		os.chdir(self.cwd)
 
-	def external_ip(self):
-		print('Place holder')
+	def datafolders_check(self):
+		'''Creates Web Server directory folder if missing'''
+		self.webserver_directory = '/var/www/WiFiSuite/'
+		if not os.path.exists(self.webserver_directory):
+			os.makedirs(self.webserver_directory)
 
 	def dependency_check(self):
 		'''Checks if hostapd-wpe is installed, if not installs it'''

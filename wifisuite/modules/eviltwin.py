@@ -2,10 +2,10 @@
 # Description: Creates an EAP based access point AKA EvilTwin.
 # Author: Nick Sanzotta
 # Contributors: 
-# Version: v 1.08302017
+# Version: v 1.09032017
 
 try:
-	import os, sys, time, datetime, signal, threading
+	import os, sys, shutil, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
 	from theme import *
 	import pubc
@@ -26,7 +26,7 @@ except Exception as e:
 class evilTwin(threading.Thread):
 	def __init__(self, interface, ssid, channel, macaddress, \
 	 certname, public,  band, server_cert, private_key,\
-	 country, state, city, company, ou, email, dryrun, debug):
+	 country, state, city, company, ou, email, debug):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # Creates thread in non-daemon mode
 		self.interface = interface
@@ -45,25 +45,52 @@ class evilTwin(threading.Thread):
 		self.email = email
 		self.server_cert = server_cert
 		self.private_key = private_key
-		self.dryrun = dryrun
 		self.debug = debug
 		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
 		self.hashcat_log = 'data/eviltwin/%s_%s.hashcat' % (self.ssid, self.log_timestamp)
 		self.jtr_log = 'data/eviltwin/%s_%s.jtr' % (self.ssid, self.log_timestamp)
+		self.letsencrypt_dir = '/etc/letsencrypt/live/'
 
 
 	def run(self):
 		self.datafolders_check()
-
+		self.cert_clean_up()
+		
+		# Use Self Signed Cert via OpenSSL
 		if not self.public:
 			self.sslCert(self.country, self.state, self.city, self.company, self.ou, self.certname, self.email)
+		# Use Public Cert
 		else:
-			publicCert = pubc.crtb(self.certname, self.email, self.dryrun, self.debug)
-			publicCert.start()
-			publicCert.join()
-			time.sleep(5)
-			print('\n')
-		
+			# Determines if requested Public Cert alreadly exists on system
+			self.certname = self.certname.lower() # Cert Directory is lower case
+			while os.path.exists('%s%s/privkey.pem' % (self.letsencrypt_dir, self.certname)) and  \
+			os.path.exists('%s%s/fullchain.pem' % (self.letsencrypt_dir, self.certname)):
+				print(blue('*')+'Using Pre-existing Public Cert: %s%s\n' % (self.letsencrypt_dir, self.certname))
+				
+				# Copy over pre-existing Private Key to WiFiSuite's data/cert directory
+				private_key_src = '%s%s/privkey.pem' % (self.letsencrypt_dir, self.certname)
+				private_key_dst = 'data/certs/private_key.pem'
+				try:
+					shutil.copy(private_key_src, private_key_dst)
+				except Exception as e:
+					print(red('!')+'Error copying cert: "%s" \n %s' % (private_key_src, e))
+				
+				# Copy over pre-existing Server Cert to WiFiSuite's data/cert directory
+				full_chain_src = '%s%s/fullchain.pem' % (self.letsencrypt_dir, self.certname)
+				full_chain_dst = 'data/certs/server_cert.pem'
+				try:
+					shutil.copy(full_chain_src, full_chain_dst)
+				except Exception as e:
+					print(red('!')+'Error copying cert: "%s" \n %s' % (full_chain_src, e))
+				break
+			# Generate new Public cert
+			else:
+				publicCert = pubc.crtb(self.certname, self.email, self.debug)
+				publicCert.start()
+				publicCert.join()
+				time.sleep(5)
+				print('\n')
+
 		self.dependency_check()
 		self.hostapd_config()
 		self.sanity_check()
@@ -103,7 +130,7 @@ class evilTwin(threading.Thread):
 		# Obtain hostapd-wpe Process ID
 		global eviltwin_pid
 		eviltwin_pid=p1.pid
-		raw_input(red('!') + 'Press Enter to quit\n\n')
+		raw_input('\n'+red('!') + 'Terminated: <Press Enter>\n')
 		# Send the signal terminate HTTPS Serverprocess
 		os.kill(os.getpgid(eviltwin_pid), signal.SIGTERM)
 	
@@ -129,6 +156,7 @@ class evilTwin(threading.Thread):
 		cert_directory = 'data/certs'
 		hostapd_directory = 'data/hostapd-wpe'
 		eviltwin_directory = 'data/eviltwin'
+
 		if not os.path.exists(cert_directory):
 			os.makedirs(cert_directory)
 		if not os.path.exists(hostapd_directory):
@@ -136,6 +164,18 @@ class evilTwin(threading.Thread):
 		if not os.path.exists(eviltwin_directory):
 			os.makedirs(eviltwin_directory)
 
+	def cert_clean_up(self):
+		server_cert = 'data/certs/server_cert.pem'
+		try:
+		    os.remove(server_cert)
+		except OSError:
+		    pass
+
+		private_key = 'data/certs/private_key.pem'
+		try:
+		    os.remove(private_key)
+		except OSError:
+		    pass
 
 	def sanity_check(self):
 		'''Terminates conflicting processes'''
