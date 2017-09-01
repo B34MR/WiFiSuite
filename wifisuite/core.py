@@ -67,7 +67,6 @@ def main():
 	company = args.company
 	ou = args.ou
 	email = args.email
-	dryrun = args.dryrun
 	debug = args.debug
 
 
@@ -160,7 +159,7 @@ def main():
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5)
 		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, public, band, server_cert, \
-			private_key, country, state, city, company, ou, email, dryrun, debug).start()
+			private_key, country, state, city, company, ou, email, debug).start()
 		# Time not needed, but provides smoother exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)
