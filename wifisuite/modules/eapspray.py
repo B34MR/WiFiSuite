@@ -2,7 +2,7 @@
 # Description: Performs a Spray Brute-force attack against the Extensible Authentication Protocol (EAP)
 # The Eapspray module is tailored to spray a list of usernames against a single password guess.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.05162017
+# Version: v 1.09042017
 
 import os, threading, time
 # WPA Supplicant required libs
