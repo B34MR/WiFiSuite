@@ -29,7 +29,8 @@ class crtb(threading.Thread):
 		# Setup SimpleHTTPServer
 		Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 		httpd = SocketServer.TCPServer(("", self.port), Handler)
-
+		httpd.allow_reuse_address = True
+		
 		# Launch SimpleHTTPServer in a seperate Process
 		os.chdir(self.webserver_directory)
 		server_process = multiprocessing.Process(target=httpd.serve_forever)
@@ -38,7 +39,10 @@ class crtb(threading.Thread):
 		print('HTTP Server Launched on Port: %s ' % (self.port))
 
 		# Run Certbot while HTTP Server process is live.
-		p1 = Popen(["certbot", "--webroot", "--non-interactive", "certonly", "--text", "--rsa-key-size", "4096", "--agree-tos", "--webroot-path", "/var/www/WiFiSuite/", "-m " + self.email, "-d " + self.certname], stdout=PIPE, stderr=PIPE)
+		try:
+			p1 = Popen(["certbot", "--webroot", "--non-interactive", "certonly", "--text", "--rsa-key-size", "4096", "--agree-tos", "--webroot-path", "/var/www/WiFiSuite/", "-m " + self.email, "-d " + self.certname], stdout=PIPE, stderr=PIPE)
+		except Exception as e:
+			print(' Error: %s' % (e))
 		if self.debug:
 			print(white('Debug')+'Certbot STDOUT/STDERR below:')
 			# Print STDOUT

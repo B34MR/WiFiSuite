@@ -63,33 +63,21 @@ class evilTwin(threading.Thread):
 		else:
 			# Determines if requested Public Cert alreadly exists on system
 			self.certname = self.certname.lower() # Cert Directory is lower case
-			while os.path.exists('%s%s/privkey.pem' % (self.letsencrypt_dir, self.certname)) and  \
+
+			if os.path.exists('%s%s/privkey.pem' % (self.letsencrypt_dir, self.certname)) and \
 			os.path.exists('%s%s/fullchain.pem' % (self.letsencrypt_dir, self.certname)):
 				print(blue('*')+'Using Pre-existing Public Cert: %s%s\n' % (self.letsencrypt_dir, self.certname))
-				
-				# Copy over pre-existing Private Key to WiFiSuite's data/cert directory
-				private_key_src = '%s%s/privkey.pem' % (self.letsencrypt_dir, self.certname)
-				private_key_dst = 'data/certs/private_key.pem'
-				try:
-					shutil.copy(private_key_src, private_key_dst)
-				except Exception as e:
-					print(red('!')+'Error copying cert: "%s" \n %s' % (private_key_src, e))
-				
-				# Copy over pre-existing Server Cert to WiFiSuite's data/cert directory
-				full_chain_src = '%s%s/fullchain.pem' % (self.letsencrypt_dir, self.certname)
-				full_chain_dst = 'data/certs/server_cert.pem'
-				try:
-					shutil.copy(full_chain_src, full_chain_dst)
-				except Exception as e:
-					print(red('!')+'Error copying cert: "%s" \n %s' % (full_chain_src, e))
-				break
+				self.cert_copy()
 			# Generate new Public cert
 			else:
 				publicCert = pubc.crtb(self.certname, self.email, self.debug)
 				publicCert.start()
 				publicCert.join()
-				time.sleep(5)
-				print('\n')
+				time.sleep(1.5)
+				self.cert_copy()
+
+		
+		print('\n')
 
 		self.dependency_check()
 		self.hostapd_config()
@@ -232,6 +220,22 @@ class evilTwin(threading.Thread):
 		with open('data/hostapd-wpe/hostapd-wpe.conf', 'w') as f1:
 		    f1.writelines( data )
 
+	def cert_copy(self):
+		# Copy over pre-existing Private Key to WiFiSuite's data/cert directory
+		private_key_src = '%s%s/privkey.pem' % (self.letsencrypt_dir, self.certname)
+		private_key_dst = 'data/certs/private_key.pem'
+		try:
+			shutil.copy(private_key_src, private_key_dst)
+		except Exception as e:
+			print(red('!')+'Error copying cert: "%s" \n %s' % (private_key_src, e))
+		
+		# Copy over pre-existing Server Cert to WiFiSuite's data/cert directory
+		full_chain_src = '%s%s/fullchain.pem' % (self.letsencrypt_dir, self.certname)
+		full_chain_dst = 'data/certs/server_cert.pem'
+		try:
+			shutil.copy(full_chain_src, full_chain_dst)
+		except Exception as e:
+			print(red('!')+'Error copying cert: "%s" \n %s' % (full_chain_src, e))
 
 	def sslCert(self, country, state, city, company, orgUnit, fqdn, email):
 		'''Create SSL Cert with Specified Values '''
