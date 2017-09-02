@@ -34,13 +34,14 @@ def parse_args():
     wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname='WiFISuite' --band b eviltwin
 
     Usage Example: (Publicly Signed Cert) 
-    python wifisuite.py -i wlan0 --certname="corp.wifisuite.com" --email "name@email.com" -s "Corporate WiFi" --public eviltwin
+    python wifisuite.py -i wlan0 --certname="corp.wifisuite.com" --email "youremail@mail.com" -s "Corporate WiFi" --public eviltwin
 
     Basic Options:
-    [-s, --ssid] Define evil access point's SSID ex: --ssid New Corp WiFi
-    [-m ] Define evil access point's MAC address ex: -m 66:55:44:AB:40:88
-    [-c, --channel] Define evil access point's channel ex: --channel 4
+    [-s, --ssid] Define EvilTwin's SSID ex: --ssid New Corp WiFi
+    [-m ] Define EvilTwin's MAC address ex: -m 66:55:44:AB:40:88
+    [-c, --channel] Define EvilTwin's channel ex: --channel 4
     [--certname] Define the TLS certificate's name (Tip: Seen by the end user) ex: WiFiSuite
+    [--public] Define if EvilTwin's TLS certificate will be a publicly signed cert.
     [--band] Define evil access point's WiFi band [A, B, G] ex: --band a
 
     Advanced Options: (Default values assigned)
@@ -50,7 +51,7 @@ def parse_args():
     [--company] Define company listed on the evil access point's TLS certificate ex: --company=NY
     [--ou] Define organizational unit listed on the evil access point's TLS certificate ex: --ou=IT
     [--email] Define email address listed on the evil access point's TLS certificate ex: --email=it@wifisuite.com
-    [--debug] Displays Hostapd-wpe output to STDOUT ex: --debug
+    [--debug] Displays Hostapd-wpe & CRTB's output to STDOUT ex: --debug
     """
   # ENUM Help
   enum_help = '\n'+ colors.blue + ' ENUM' + colors.normal + """
