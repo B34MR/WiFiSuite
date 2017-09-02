@@ -171,7 +171,7 @@ def main():
 		'''Determines if Brute-force attack will be EAP or WPA by checking if the USER parameter is present'''
 		if user:
 			# initiates eapSpray worker thread
-			eapSprayT1 = eapspray.eapSpray(ssid, Queue_user, password, server_cert,\
+			eapSprayT1 = eapspray.eapSpray(ssid, Queue_user, userList, password, server_cert,\
 			server_cert_path, client_cert, supplicantInt0, interface0).start()
 			# Starts Queue
 			Queue_user.join()

