@@ -62,13 +62,13 @@ class Navigator(cmd.Cmd):
 	
 	def do_eaphashes(self, args):
 		""" Displays all EAP Hashes.\n Filter ESSID Type: eaphashes <ESSID> \n Example: eaphashes CompanyWiFi """
-		print(' %-3s %-13s %-17s %-80s %s' % \
+		print(' %-3s %-15s %-17s %-80s %s' % \
 			 ('ID', 'ESSID', 'Identity', 'Hash', 'Last Seen'))
-		print(' %-3s %-13s %-17s %-80s %s' % \
+		print(' %-3s %-15s %-17s %-80s %s' % \
 		     ('--', '--------', '---------', '--------', '--------------------'))
 		table = self.db.get_eaphashes(args)
 		for row in table:
-			print(' %-3s %-13s %-17s %-80s %s' %\
+			print(' %-3s %-15s %-17s %-80s %s' %\
 			(row[0], row[3], row[1], row[2], row[4]))
 
 	def do_wpakeys(self, args):
