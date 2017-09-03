@@ -2,14 +2,15 @@
 # Description: Helper - Automates Public Cert Creation
 # Author: Nick Sanzotta
 # Contributors: 
-# Version: v 1.09032017
+# Version: v 1.09252017
 try:
 	import os, sys, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
 	import SocketServer, SimpleHTTPServer, multiprocessing
 	from theme import *
 except Exception as e:
-	print('\n [!] Error ' +str(e))
+	print('\n [!] PUBC - Error: ' % (e))
+	sys.exit(1)
 
 class crtb(threading.Thread):
 	def __init__(self, certname, email, debug):

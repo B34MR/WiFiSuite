@@ -1,11 +1,14 @@
 # Module: macchanger.py
 # Description: Wrapper for built-in linux tool macchanger.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.05162017
-
-import os, time
-from subprocess import Popen, PIPE 
-from theme import *
+# Version: v 1.09252017
+try:
+	import os, sys, time
+	from subprocess import Popen, PIPE 
+	from theme import *
+except Exception as e:
+	print('\n [!] MACCHANGE - Error: ' % (e))
+	sys.exit(1)
 
 def macRandom(interface):
 	wirelessInt = str(interface.get_ifname())

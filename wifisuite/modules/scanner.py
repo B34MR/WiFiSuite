@@ -2,7 +2,7 @@
 # Description: Scans the WiFi spectrum and saves output to the WiFiSuite database.
 # Author: Bill Harshbarger 
 # Contributors: Nick Sanzotta/@Beamr
-# Version: v 1.09242017
+# Version: v 1.09252017
 try:
 	from scapy.all import *
 	from theme import *
@@ -10,7 +10,9 @@ try:
 	from time import sleep
 	from subprocess import Popen, PIPE, STDOUT 
 except Exception as e:
-	print('\n [!] Error %s' % (e))
+	print('\n [!] SCANNER - Error %s' % (e))
+	sys.exit(1)
+
 try:
 	from dbcommands import DB
 	import sqlite3

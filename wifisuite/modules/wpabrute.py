@@ -2,15 +2,15 @@
 # Description: Performs a Spray Brute-force attack against the Wi-Fi Protected Access (WPA) protocol.
 # The WPAbrute module is tailored to spray a list of passwords against a single access point/SSID.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09142017
+# Version: v 1.09252017
 try:
-	import os, threading, datetime, time
+	import os, sys, threading, datetime, time
 	from wpa_supplicant.core import WpaSupplicantDriver
 	from twisted.internet.selectreactor import SelectReactor
 	from twisted.internet import task
 	from theme import *
 except Exception as e:
-	print('\n [!] ERROR: %s' % (e))
+	print('\n [!] WPABRUTE - Error: ' % (e))
 	sys.exit(1)
 	
 try:

@@ -1,35 +1,18 @@
 # Module: openconnect.py
 # Description: Simplifies the ability to connect to open Wi-Fi networks with broadcasts either enabled or disabled.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.05212017
-
-import os, threading, time
-# WPA Supplicant required libs
-from wpa_supplicant.core import WpaSupplicantDriver
-from twisted.internet.selectreactor import SelectReactor
-from twisted.internet import task
-# Theme
-from theme import *
-# External IP Query
-import json, urllib, socket
-# Internal IP Query
-import netifaces
-
-# # Database
-# from dbcommands import DB
-# # Database connection
-# # CHECK: needs to be relocated, used while testing database.py
-# import sqlite3
-# try:
-#      # Connect to Database 
-#      # ISSUE/TEMP hardcoded db_path
-#      conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # KEEP Thread Support
-#      conn.text_factory = str # KEEP Interpret 8-bit bytestrings 
-#      conn.isolation_level = None # KEEP Autocommit Mode
-#      db = DB(conn)
-# except Exception as e:
-#      print(red('!') + 'Could not connect to database: ' +str(e))
-#      sys.exit(1)
+# Version: v 1.09252017
+try:
+	import os, sys, threading, time
+	from wpa_supplicant.core import WpaSupplicantDriver
+	from twisted.internet.selectreactor import SelectReactor
+	from twisted.internet import task
+	from theme import *
+	import json, urllib, socket
+	import netifaces
+except Exception as e:
+	print('\n [!] OPENCONNECT - Error: ' % (e))
+	sys.exit(1)
 
 class openConnect():
 	def __init__(self, ssid, supplicantInt, interface):
@@ -41,7 +24,6 @@ class openConnect():
 			self.wirelessInt = str(self.interface.get_ifname())
 	
 	def get_external_address(self):
-		''' Obtains External IP Address '''
 		data = json.loads(urllib.urlopen("http://ip.jsontest.com/").read())
 		return data["ip"]
 
@@ -50,7 +32,6 @@ class openConnect():
 		banner()
 		# Time Stamp
 		curr_time2 = time.time()
-		#DEBUG PRINT
 		network_cfg = {
 				"disabled": 0, 
 				"ssid": self.ssid,
@@ -108,19 +89,6 @@ class openConnect():
 				except (IOError, ValueError) as e:
 					print(red('!')+ 'There maybe a signin page')
 					pass
-
-				# # Connectivity Check
-				# try:
-				# 	extipAddress = self.get_external_address()
-				# except IOError:
-				# 	print(red('!')+ 'No internet connectivity')
-				# 	pass #CHECK
-				# # # Testing for Portal Page
-				# # try:
-				# # 	extipAddress = self.get_external_address()
-				# # except ValueError:
-				# # 	print(red('!')+ 'There maybe a signin page')
-				# # 	pass
 
 				raw_input(blue('*')+'Press Enter to gracefully close the WiFi network connection:')
 				# Remove from associated network, which results in state: 'inactive'

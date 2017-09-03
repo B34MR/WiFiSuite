@@ -2,14 +2,14 @@
 # Module: database.py
 # Description: Interactive CLI (Navigator) for Database queries
 # Author(s): Nick Sanzotta / Bill Harshbarger
-# Version: v 1.09232017
+# Version: v 1.09252017
 try:
 	import os, sys, cmd, sqlite3
 	from theme import *
 	from dbcommands import DB
 	from createdb import dbcheck
 except Exception as e:
-	print('\n [!] Error: ' % (e))
+	print('\n [!] DATABASE - Error: ' % (e))
 	sys.exit(1)
 
 class Navigator(cmd.Cmd):

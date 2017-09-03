@@ -1,16 +1,19 @@
 # Module: wpaconnect.py
 # Description: Simplifies the ability to connect to Wi-Fi Protected Access (WPA) networks from Kali.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09142017
-
-import threading, time
-from subprocess import Popen, PIPE
-from wpa_supplicant.core import WpaSupplicantDriver
-from twisted.internet.selectreactor import SelectReactor
-from twisted.internet import task
-from theme import *
-import json, urllib, socket
-import netifaces
+# Version: v 1.09252017
+try:
+	import sys, threading, time
+	from subprocess import Popen, PIPE
+	from wpa_supplicant.core import WpaSupplicantDriver
+	from twisted.internet.selectreactor import SelectReactor
+	from twisted.internet import task
+	from theme import *
+	import json, urllib, socket
+	import netifaces
+except Exception as e:
+	print('\n [!] WPACONNECT - Error: ' % (e))
+	sys.exit(1)
 
 try:
 	from dbcommands import DB
@@ -34,7 +37,6 @@ class wpaConnect(threading.Thread):
 			self.wirelessInt = str(self.interface.get_ifname())
 	
 	def get_external_address(self):
-		''' Obtains External IP Address '''
 		data = json.loads(urllib.urlopen("http://ip.jsontest.com/").read())
 		return data["ip"]
 

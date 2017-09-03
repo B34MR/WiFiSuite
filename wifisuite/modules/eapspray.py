@@ -2,17 +2,16 @@
 # Description: Performs a Spray Brute-force attack against the Extensible Authentication Protocol (EAP)
 # The Eapspray module is tailored to spray a list of usernames against a single password guess.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09142017
+# Version: v 1.09252017
 try:
-	import os, threading, datetime, time
+	import os, sys, threading, datetime, time
 	from wpa_supplicant.core import WpaSupplicantDriver
 	from twisted.internet.selectreactor import SelectReactor
 	from twisted.internet import task
 	from theme import *
 except Exception as e:
-	print('\n [!] ERROR: %s' % (e))
+	print('\n [!] EAPSPRAY - Error: ' % (e))
 	sys.exit(1)
-
 
 try:
 	from dbcommands import DB

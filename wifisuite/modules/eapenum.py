@@ -3,7 +3,7 @@
 # The Eapenum module will perform a deauthentication attack against a single access point/BSSID,
 # while client probes attempt to reconnect Eapenum will sniff for insecure EAP user identities.
 # Author(s): Nick Sanzotta / Bill Harshbarger
-# Version: v 1.09132017
+# Version: v 1.09252017
 try:
 	import os, sys, signal, threading
 	from datetime import datetime
@@ -11,7 +11,7 @@ try:
 	from theme import *
 	from helpers import monitormode
 except Exception as e:
-	print('\n [!] ERROR: %s' % (e))
+	print('\n [!] EAPENUM - Error: ' % (e))
 	sys.exit(1)
 	
 try:

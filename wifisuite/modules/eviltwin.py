@@ -2,15 +2,15 @@
 # Description: Creates an EAP based access point AKA EvilTwin.
 # Author: Nick Sanzotta
 # Contributors: 
-# Version: v 1.09032017
-
+# Version: v 1.09252017
 try:
 	import os, sys, shutil, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
 	from theme import *
 	import pubc
 except Exception as e:
-	print('\n [!] Error ' +str(e))
+	print('\n [!] EVILTWIN - Error: ' % (e))
+	sys.exit(1)
 
 try:
 	from dbcommands import DB
