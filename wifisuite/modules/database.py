@@ -47,11 +47,11 @@ Example: ap 802.1x
 	def do_identities(self, args):
 		"""Displays all Identities captured from ENUM.
 		"""
-		print(' ID  ESSID         Identity      Last Seen ')
-		print(' --  --------      ---------     -------------------- ')
+		print(' ID  ESSID         Identity                       Last Seen ')
+		print(' --  --------      ---------                      -------------------- ')
 		table = self.db.get_identity()
 		for row in table:
-			print(' %-3s %-13s %-13s %-8s ' %\
+			print(' %-3s %-13s %-30s %-8s ' %\
 			(row[0], row[2], row[1], row[3]))
 
 	def do_eapcreds(self, args):
@@ -59,11 +59,11 @@ Example: ap 802.1x
 Filter ESSID Type: eapcreds <ESSID> 
 Example: eapcreds CompanyWiFi
 		"""
-		print(' ID  ESSID         Identity      Password      Last Seen ')
-		print(' --  --------      ---------     --------      -------------------- ')
+		print(' ID  ESSID         Identity          Password                                 Last Seen ')
+		print(' --  --------      ---------         --------                                 -------------------- ')
 		table = self.db.get_eapcreds(args)
 		for row in table:
-			print(' %-3s %-13s %-13s %-13s %s' %\
+			print(' %-3s %-13s %-17s %-80s %s' %\
 			(row[0], row[3], row[1], row[2], row[4]))
 
 	def do_wpakeys(self, args):
