@@ -164,7 +164,8 @@ def main():
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)
 	elif mode in 'enum':
-		eapEnumT1 = eapenum.eapEnum(deauth, "ff:ff:ff:ff:ff:ff", seconds, packets, interface0, channel).start() 
+		eapEnumT1 = eapenum.eapEnum(deauth, "ff:ff:ff:ff:ff:ff", seconds, packets, interface0, channel)
+		eapEnumT1.start()
 		reactor.callFromThread(reactor.stop)
 	elif mode in 'spray':
 		print(blue('i')+ 'Using Interface(s): '+str(interface0.get_ifname()))
