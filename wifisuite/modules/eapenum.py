@@ -57,7 +57,7 @@ class eapEnum(threading.Thread):
 		print(normal('*') + 'Sniffing on %s for the next %s seconds.' % (self.wirelessInt,str(self.timeout)))
 		print(blue('*') + 'Identities Log: %s (Press Ctrl-Z to quit)\n ' % (self.identities_log))
 		sniff(iface=self.wirelessInt, timeout=self.timeout, prn=self.packethandler, count=0)
-		print(blue('i') + str(self.timeout) + ' seconds has exceeded: ')
+		print(normal('*') + str(self.timeout) + ' seconds has exceeded: ')
 		self.monitor_stop()
 
 	def monitor_start(self):
@@ -88,7 +88,7 @@ class eapEnum(threading.Thread):
 	def deauth(self):
 		print(normal('*') + '%s is sending %s deauthentication packets to %s' % (self.wirelessInt, self.deauthPktCount, self.apmac))
 		try:
-			sendp(self.deauthPacket, iface = self.wirelessInt, count=self.deauthPktCount, inter = .2, verbose=False)
+			sendp(self.deauthPacket, iface=self.wirelessInt, count=self.deauthPktCount, inter=.2, verbose=False)
 		except Exception as e:
 			print(red('!') + 'Error sending deauth packets: %s' % e)
 
@@ -104,12 +104,14 @@ class eapEnum(threading.Thread):
 				identity = pkt.getlayer(EAP).identity
 				# Append to set: identities
 				identities.add(identity)
-				# STDOUT
-				print(green('*')+'%s' % (identity))
-				with open(self.identities_log, 'a') as f1:
-					f1.write(identity)
-					f1.write('\n')
-				# Commit to database
-				db.identity_commit(identity, essid)
+				# Filter out Request Identity Packets which produce a NULL entry
+				if identity not in 'Request':
+					print(green('*')+'%s' % (identity))
+					# Write to Identity log.
+					with open(self.identities_log, 'a') as f1:
+						f1.write(identity)
+						f1.write('\n')
+					# Commit to database
+					db.identity_commit(identity, essid)
 
 
