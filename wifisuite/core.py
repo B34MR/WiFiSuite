@@ -15,7 +15,7 @@ try:
 	import readline
 	readline.parse_and_bind("tab: complete")
 	from theme import *
-	# Import Modules #Add For loop to Modules folder
+	# Import Modules
 	from modules import eapenum
 	from modules import eapspray
 	from modules import eapconnect
@@ -27,6 +27,8 @@ try:
 	from modules import database
 	from modules import eviltwin
 	from modules import pubc
+	from helpers import deauthentication
+	from helpers import monitormode
 
 except Exception as e:
 	print(' [!] Error: ' + str(e))
@@ -45,7 +47,7 @@ def main():
 	user = args.user
 	password = args.password
 	channel = args.channel
-	deauth = args.deauth
+	apmac = args.deauth
 	packets = args.packets
 	seconds = args.seconds
 	location = args.location
@@ -164,9 +166,24 @@ def main():
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)
 	elif mode in 'enum':
-		eapEnumT1 = eapenum.eapEnum(deauth, "ff:ff:ff:ff:ff:ff", seconds, packets, interface0, channel)
-		eapEnumT1.start()
+		# Place interface in Monitor mode, prior to DeAuth and Enum
+		wirelessInt = str(interface0.get_ifname())
+		monitormode.monitor_start(wirelessInt, channel)
+
+		try:
+			# Create Enum-Sniffing Thread (non-daemon)
+			enum_Thread = eapenum.eapEnum(apmac, seconds, interface0, channel)
+			enum_Thread.start()
+			time.sleep(2.5)
+			# Create a deAuth Thread (non-daemon)
+			deAuth_Thread = deauthentication.deAuth(apmac, packets, interface0)
+			deAuth_Thread.start()
+		except KeyboardInterrupt:
+			print('\n'+red('!')+'Ctrl-C detected: ')
+			monitormode.monitor_stop(wirelessInt)
+		# Stop reator Thread / Terminate script
 		reactor.callFromThread(reactor.stop)
+
 	elif mode in 'spray':
 		print(blue('i')+ 'Using Interface(s): '+str(interface0.get_ifname()))
 		'''Determines if Brute-force attack will be EAP or WPA by checking if the USER parameter is present'''

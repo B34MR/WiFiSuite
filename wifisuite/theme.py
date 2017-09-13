@@ -1,7 +1,7 @@
 import os
 #Theme v1.05052017
 App = ' WiFiSuite '
-Version = ' v 1.09112017'
+Version = ' v 1.09132017'
 Author = 'Nick Sanzotta/@Beamr'
 
 # Colors

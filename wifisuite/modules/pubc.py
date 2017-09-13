@@ -1,5 +1,5 @@
 # Module: PubC
-# Description:
+# Description: Helper - Automates Public Cert Creation
 # Author: Nick Sanzotta
 # Contributors: 
 # Version: v 1.09032017
