@@ -201,7 +201,7 @@ def main():
 			lc.start(10)
 		else:
 			# initiates wpaBrute worker thread
-			wpaBruteT1 = wpabrute.wpaBrute(ssid, Queue_password, supplicantInt0,\
+			wpaBruteT1 = wpabrute.wpaBrute(ssid, Queue_password, passwordList, supplicantInt0,\
 			interface0).start()
 			# Starts Queue
 			Queue_password.join()

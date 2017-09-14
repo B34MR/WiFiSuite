@@ -1,42 +1,32 @@
 # Module: wpaconnect.py
 # Description: Simplifies the ability to connect to Wi-Fi Protected Access (WPA) networks from Kali.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.05162017
+# Version: v 1.09142017
 
-import os, threading, time
-# WPA Supplicant required libs
+import threading, time
+from subprocess import Popen, PIPE
 from wpa_supplicant.core import WpaSupplicantDriver
 from twisted.internet.selectreactor import SelectReactor
 from twisted.internet import task
-# Theme
 from theme import *
-# External IP Query
 import json, urllib, socket
-# Internal IP Query
 import netifaces
 
-# Database
-from dbcommands import DB
-# Database connection
-# CHECK: needs to be relocated, used while testing database.py
-import sqlite3
 try:
-     # Connect to Database 
-     # ISSUE/TEMP hardcoded db_path
-     conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # KEEP Thread Support
-     conn.text_factory = str # KEEP Interpret 8-bit bytestrings 
-     conn.isolation_level = None # KEEP Autocommit Mode
-     db = DB(conn)
+	from dbcommands import DB
+	import sqlite3
+	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
+	conn.text_factory = str # Interpret 8-bit bytestrings 
+	conn.isolation_level = None # Autocommit Mode
+	db = DB(conn)
 except Exception as e:
-     print(red('!') + 'Could not connect to database: ' +str(e))
-     sys.exit(1)
-
-
+	print(red('!')+'Could not connect to database: %s' % (e))
+	sys.exit(1)
 
 class wpaConnect(threading.Thread):
 	def __init__(self, ssid, password, supplicantInt, interface):
 			threading.Thread.__init__(self)
-			self.setDaemon(1) # Creates Thread in daemon mode
+			self.setDaemon(1) # daemon
 			self.ssid = ssid
 			self.password = password
 			self.supplicantInt = supplicantInt
@@ -105,7 +95,7 @@ class wpaConnect(threading.Thread):
 						break
 				
 				if self.interface.get_state() == 'completed':
-						os.system('dhclient ' + self.wirelessInt)
+						p1 = Popen(['dhclient', self.wirelessInt], stdout=open("/dev/null", "w"), stderr=open("/dev/null", "w"))
 						print('\n')
 						# Obtain Internal IP Address
 						netifaces.ifaddresses(self.wirelessInt)

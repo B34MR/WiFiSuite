@@ -2,36 +2,33 @@
 # Description: Performs a Spray Brute-force attack against the Extensible Authentication Protocol (EAP)
 # The Eapspray module is tailored to spray a list of usernames against a single password guess.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09042017
-
-import os, threading, time
-# WPA Supplicant required libs
-from wpa_supplicant.core import WpaSupplicantDriver
-from twisted.internet.selectreactor import SelectReactor
-from twisted.internet import task
-# Theme
-from theme import *
-
-# Database
-from dbcommands import DB
-# Database connection
-# CHECK: needs to be relocated, used while testing database.py
-import sqlite3
+# Version: v 1.09142017
 try:
-     # Connect to Database 
-     # ISSUE/TEMP hardcoded db_path
-     conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # KEEP Thread Support
-     conn.text_factory = str # KEEP Interpret 8-bit bytestrings 
-     conn.isolation_level = None # KEEP Autocommit Mode
-     db = DB(conn)
+	import os, threading, datetime, time
+	from wpa_supplicant.core import WpaSupplicantDriver
+	from twisted.internet.selectreactor import SelectReactor
+	from twisted.internet import task
+	from theme import *
 except Exception as e:
-     print(red('!') + 'Could not connect to database: ' +str(e))
-     sys.exit(1)
+	print('\n [!] ERROR: %s' % (e))
+	sys.exit(1)
+
+
+try:
+	from dbcommands import DB
+	import sqlite3
+	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
+	conn.text_factory = str # Interpret 8-bit bytestrings 
+	conn.isolation_level = None # Autocommit Mode
+	db = DB(conn)
+except Exception as e:
+	print(red('!')+'Could not connect to database: %s' % (e))
+	sys.exit(1)
 
 class eapSpray(threading.Thread):
 	def __init__(self, ssid, user, userList, password, ca_cert, ca_path, client_cert, supplicantInt, interface):
 		threading.Thread.__init__(self)
-		self.setDaemon(1) # Creates Thread in daemon mode
+		self.setDaemon(1) # daemon
 		self.ssid = ssid
 		self.user = user
 		self.userList = userList # original userList prior to Queue_user, used to enumerate user count.
@@ -41,10 +38,13 @@ class eapSpray(threading.Thread):
 		self.client_cert = client_cert
 		self.supplicantInt = supplicantInt
 		self.interface = interface
+		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
+		self.eapcreds_log = 'data/eapcreds/%s_%s.eapcreds' % (self.ssid, self.log_timestamp)
 
 	def run(self):
+		self.datafolders_check()
 		# Time Stamp for file creation
-		timestr = time.strftime("%Y%m%d-%H%M") # NOT SURE I NEED THIS ANY LONGER
+		timestr = time.strftime("%Y%m%d-%H%M")
 		# Time Stamp for entire credential spray
 		curr_time1 = time.time()
 		# Container of successfully authenticated user
@@ -123,16 +123,29 @@ class eapSpray(threading.Thread):
 
 			cls()
 			banner()
-			print(' Credentials Discovered: ')
 			try:
-				for users in successList:
-					print(' ' + users)
-					with open('data/'+self.ssid+'_'+timestr+'.txt', 'a+') as f1:
-						f1.write(users+'\n')
-					
-			except UnboundLocalError:
-				#ISSUE NOT PRINTING.
-				print(colors.red + 'None: [!]' + colors.normal)	
+				print(normal('*')+'Completed in: %.1fs' % (time.time() - curr_time1))
+				print(normal('*')+'SSID Brute-forced: %s' % (self.ssid))
+				print(normal('*')+'Password Sprayed: %s' % (self.password))
+				print(normal('*')+'Accounts Tested: [%s]' % (user_list_length))
+				print(normal('*')+'Password(s) Guessed: [%s/%s]' % (len(successList),user_list_length))
+				
+				if len(successList):
+					print('\n'+normal('*')+'EAP Creds Log: %s' % (self.eapcreds_log))
+					for users in successList:
+						print(green('*')+users)
+						with open(self.eapcreds_log, 'a+') as f1:
+							f1.write(users+'\n')
+				else:
+					print(normal('*')+'No EAP Credentials Discovered')
+
+			except UnboundLocalError as e:
+				print(red('!')+'Error: %s' % (e))	
 	
-			print("\n Completed Time in: %.1fs\n" % (time.time() - curr_time1))
 			self.user.task_done()
+
+	def datafolders_check(self):
+		'''Creates eapcreds folder(s) if missing'''
+		eapcreds_directory = 'data/eapcreds'
+		if not os.path.exists(eapcreds_directory):
+			os.makedirs(eapcreds_directory)
