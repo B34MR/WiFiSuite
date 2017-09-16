@@ -22,8 +22,8 @@
     OS Requirements: 
 	Kali Rolling
 ###
-     Dependencies:
-	hostapd-wpe
+    Dependencies:
+        hostapd-wpe
 	netifaces
 	python-pip 
 	python-dev
@@ -32,13 +32,13 @@
 	wpa_supplicant
 ###	
      Install:
-	apt-get install scapy
+        apt-get install scapy
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
 	python setup.py install --record install.log	
 ###
      Run:
-	cd wifisuite/
+        cd wifisuite/
 	python wifisuite.py
 	Output of Successful Installation:
 	       [i] Directory found: data/
