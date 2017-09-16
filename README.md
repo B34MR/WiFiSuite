@@ -48,7 +48,7 @@
 
 ## :book: Wiki
    [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)
-   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In progress
+   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin)
    [ENUM](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)
    [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)
    [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)
