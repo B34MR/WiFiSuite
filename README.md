@@ -55,8 +55,8 @@
    [WPA Brute-force] _In Progress_ <br>
    [WPA Spray] _In Progress_ <br>
    [Quick Connect](https://github.com/NickSanzotta/WiFiSuite/wiki/Quick-Connect) _In Progress_ <br>
-   [MAC Changer]() _In Progress_ <br>
-   [Database]() _In Progress_ <br>
+   [MAC Changer] _In Progress_ <br>
+   [Database] _In Progress_ <br>
    [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
    [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
 
