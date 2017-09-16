@@ -1,17 +1,26 @@
 ![Supported Python versions](https://img.shields.io/badge/python-2.7-blue.svg)
 # WiFiSuite     
-	WiFiSuite is a wireless auditing platform for Pentesters.
+	WiFiSuite is a wireless auditing platform to help Pentesters streamline the process of auditing wireless networks, this is done by consolidating the most common tools and techniques in a unified platform backed with a SQLite database.
 
-## :heavy_exclamation_mark: Requirements
-	Kali 2016.1 or Kali 2016.2 rolling. 
-	External WiFi card, known working Brands/Models: TP-Link Model TL-WN722N, AWUS036NH, AWUS051NH
-    
-## Installation
+
+## :white_check_mark: Installation
+	OS Requirements: Kali Rolling
+###	
+        Dependencies:
+	hostapd-wpe
+    	netifaces
+    	python-pip 
+    	python-dev
+   	psutil
+    	scapy    
+    	wpa_supplicant
+###	
+	
 	apt-get install scapy
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
 	python setup.py install --record install.log	
-##
+###
 	cd wifisuite/
 	python wifisuite.py
 	Output of Successful Installation:
@@ -24,15 +33,6 @@
     cd WiFiSuite
     cat install.log | xargs rm -rf
 
-## Dependencies
-    hostapd-wpe
-    netifaces
-    python-pip 
-    python-dev
-    psutil
-    scapy    
-    wpa_supplicant
-        
 ## :pencil: Cheat Sheet
     SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" --band b eviltwin
