@@ -46,10 +46,15 @@
     MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
     DATABASE:       python wifisuite.py database
 
-## :book: Wiki
+## :book: WiFiSuite Wiki
    [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
    [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In Progress_ <br>
    [Enum](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
+   [Scan] _In Progress_ <br>
+   [EAP Spray] _In Progress_ <br>
+   [WPA Brute-force] _In Progress_ <br>
+   [WPA Spray] _In Progress_ <br>
+   [Quick Connect] _In Progress_ <br>
    [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
    [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
 
