@@ -48,10 +48,11 @@
 
 ## :book: Wiki
    [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)
-   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In progress_
+   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In progress
    [ENUM](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)
    [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)
    [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)
+
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-C.gif)
