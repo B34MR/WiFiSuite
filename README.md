@@ -48,8 +48,8 @@
 
 ## :book: Wiki
    [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
-   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin)<br>
-   [ENUM](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
+   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In Progress <br>
+   [Enum](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum) - WPA Enterprise User Identity Enumeration<br>
    [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
    [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
 
