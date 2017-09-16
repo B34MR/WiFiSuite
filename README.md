@@ -32,14 +32,7 @@
     psutil
     scapy    
     wpa_supplicant
-    
-## Installation troubleshooting
-    Error(s) Rasised: Bad key "patch.force_edgecolor"
-    Resolution: pip install matplotlib --upgrade
-    
-    Error: You received an 'Attribute' error, while running WiFiSuite ENUM.
-    Resolution: apt-get install scapy (Even if Scapy is already installed on Kali 2016.2)
-    
+        
 ## :book: Cheat Sheet
     SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" --band b eviltwin
