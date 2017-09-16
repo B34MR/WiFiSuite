@@ -47,11 +47,11 @@
     DATABASE:       python wifisuite.py database
 
 ## :book: Wiki
-   [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)
-   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin)
-   [ENUM](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)
-   [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)
-   [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)
+   [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
+   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin)<br>
+   [ENUM](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
+   [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
+   [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
 
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
