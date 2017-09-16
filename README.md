@@ -33,7 +33,7 @@
     scapy    
     wpa_supplicant
         
-## :book: Cheat Sheet
+## :pencil: Cheat Sheet
     SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" --band b eviltwin
     ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
@@ -46,8 +46,8 @@
     MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
     DATABASE:       python wifisuite.py database
 
-## Wiki
-   ENUM(https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)
+## :book: Wiki
+   [ENUM](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)
 ##
 * SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
      ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-C.gif)
