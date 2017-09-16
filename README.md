@@ -3,12 +3,26 @@
     WiFiSuite is a wireless auditing platform to help Pentesters streamline the process of auditing wireless networks,
     this is done by consolidating the most common tools and techniques in a unified platform backed with a SQLite database.
 
+## :book: WiFiSuite Wiki
+   [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
+   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In Progress_ <br>
+   [Enum](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
+   [Scan](https://github.com/NickSanzotta/WiFiSuite/wiki/Scan) _In Progress_ <br>
+   [EAP Spray](https://github.com/NickSanzotta/WiFiSuite/wiki/EAP-Spray) _In Progress_ <br>
+   [WPA Brute-force] _In Progress_ <br>
+   [WPA Spray] _In Progress_ <br>
+   [Quick Connect](https://github.com/NickSanzotta/WiFiSuite/wiki/Quick-Connect) _In Progress_ <br>
+   [MAC Changer] _In Progress_ <br>
+   [Database] _In Progress_ <br>
+   [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
+   [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
+
 
 ## :white_check_mark: Installation
-	OS Requirements: 
+    OS Requirements: 
 	Kali Rolling
-###	
-        Dependencies:
+###
+     Dependencies:
 	hostapd-wpe
 	netifaces
 	python-pip 
@@ -17,13 +31,13 @@
 	scapy    
 	wpa_supplicant
 ###	
-	Install:
+     Install:
 	apt-get install scapy
 	git clone https://github.com/NickSanzotta/WiFiSuite.git
 	cd WiFiSuite
 	python setup.py install --record install.log	
 ###
-	Run:
+     Run:
 	cd wifisuite/
 	python wifisuite.py
 	Output of Successful Installation:
@@ -48,20 +62,6 @@
     MAC (Randomize):python wifisuite.py -iwlan0 mac
     MAC (Manual):   python wifisuite.py -iwlan0 -m 10:10:10:A9:72:E6 mac
     DATABASE:       python wifisuite.py database
-
-## :book: WiFiSuite Wiki
-   [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
-   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In Progress_ <br>
-   [Enum](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
-   [Scan](https://github.com/NickSanzotta/WiFiSuite/wiki/Scan) _In Progress_ <br>
-   [EAP Spray](https://github.com/NickSanzotta/WiFiSuite/wiki/EAP-Spray) _In Progress_ <br>
-   [WPA Brute-force] _In Progress_ <br>
-   [WPA Spray] _In Progress_ <br>
-   [Quick Connect](https://github.com/NickSanzotta/WiFiSuite/wiki/Quick-Connect) _In Progress_ <br>
-   [MAC Changer] _In Progress_ <br>
-   [Database] _In Progress_ <br>
-   [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
-   [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
 
 
 ## :beers: Credits
