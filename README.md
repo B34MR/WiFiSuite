@@ -50,30 +50,14 @@
    [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
    [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In Progress_ <br>
    [Enum](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
-   [Scan] _In Progress_ <br>
-   [EAP Spray] _In Progress_ <br>
+   [Scan](https://github.com/NickSanzotta/WiFiSuite/wiki/Scan) _In Progress_ <br>
+   [EAP Spray](https://github.com/NickSanzotta/WiFiSuite/wiki/EAP-Spray) _In Progress_ <br>
    [WPA Brute-force] _In Progress_ <br>
    [WPA Spray] _In Progress_ <br>
-   [Quick Connect] _In Progress_ <br>
+   [Quick Connect](https://github.com/NickSanzotta/WiFiSuite/wiki/Quick-Connect) _In Progress_ <br>
    [Average Brute force time](https://github.com/NickSanzotta/WiFiSuite/wiki/Average-Brute-force-time)<br>
    [Troubleshooting](https://github.com/NickSanzotta/WiFiSuite/wiki/Troubleshooting)<br>
 
-##
-* SCAN: Perform a quick survey of the 2.4Ghz Wireless Spectrum
-     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSCAN-C.gif)
-
-##
-* SPRAY (EAP): Perform a EAP Password Spray against a list of user accounts using a single password.
-	       [*] Tip SSID(s) are case sensitive!
-	       
-     ![](https://github.com/NickSanzotta/img/blob/master/WiFiSuiteSPRAYEAP-A.gif)
-##
-
-* CONNECT (EAP): Connect to an EAP Access Point with username and password authentication, after connection has completed 
-		 open a new console tab to interact with the network. Ensure to shutdown the connection gracefully to avoid 		     future connectivity issues.
-	         [*] Tip SSID(s) are case sensitive!
-
-     ![]( https://github.com/NickSanzotta/img/blob/master/WiFiSuiteCONNECT-A.gif)
 
 ## :octocat: Credits
 	Contributor(s):             Bill Harshbarger 'https://github.com/bharshbarger'
