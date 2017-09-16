@@ -24,27 +24,27 @@
 ###
     Dependencies:
         hostapd-wpe
-	netifaces
-	python-pip 
-	python-dev
-	psutil
-	scapy    
-	wpa_supplicant
+        netifaces
+        python-pip 
+        python-dev
+        psutil
+        scapy    
+        wpa_supplicant
 ###	
      Install:
         apt-get install scapy
-	git clone https://github.com/NickSanzotta/WiFiSuite.git
-	cd WiFiSuite
-	python setup.py install --record install.log	
+        git clone https://github.com/NickSanzotta/WiFiSuite.git
+        cd WiFiSuite
+        python setup.py install --record install.log	
 ###
      Run:
-        cd wifisuite/
-	python wifisuite.py
-	Output of Successful Installation:
-	       [i] Directory found: data/
- 	       [!] Database not found: data/WiFiSuite.db
- 	       [i] Created Datebase: data/WiFiSuite.db
- 	       [i] Database instantiated
+       cd wifisuite/
+       python wifisuite.py
+       Output of Successful Installation:
+          [i] Directory found: data/
+          [!] Database not found: data/WiFiSuite.db
+          [i] Created Datebase: data/WiFiSuite.db
+          [i] Database instantiated
 
 ## Uninstall
     cd WiFiSuite
