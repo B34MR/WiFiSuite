@@ -47,7 +47,7 @@ this is done by consolidating the most common tools and techniques in a unified 
           [i] Created Datebase: data/WiFiSuite.db
           [i] Database instantiated
 
-## Uninstall
+## :x: Uninstall
     cd WiFiSuite
     cat install.log | xargs rm -rf
 
