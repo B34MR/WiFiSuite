@@ -1,6 +1,7 @@
 ![Supported Python versions](https://img.shields.io/badge/python-2.7-blue.svg)
 # WiFiSuite     
-	WiFiSuite is a wireless auditing platform to help Pentesters streamline the process of auditing wireless networks, this is done by consolidating the most common tools and techniques in a unified platform backed with a SQLite database.
+	WiFiSuite is a wireless auditing platform to help Pentesters streamline the process of auditing wireless networks,<br>
+	this is done by consolidating the most common tools and techniques in a unified platform backed with a SQLite database.
 
 
 ## :white_check_mark: Installation
