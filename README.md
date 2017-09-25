@@ -6,7 +6,7 @@ this is done by consolidating the most common tools and techniques in a unified 
 
 ## :book: WiFiSuite Wiki
    [Main](https://github.com/NickSanzotta/WiFiSuite/wiki)<br>
-   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin) _In Progress_ <br>
+   [EvilTwin](https://github.com/NickSanzotta/WiFiSuite/wiki/EvilTwin)<br>
    [Enum](https://github.com/NickSanzotta/WiFiSuite/wiki/Enum)<br>
    [Scan](https://github.com/NickSanzotta/WiFiSuite/wiki/Scan) _In Progress_ <br>
    [EAP Spray](https://github.com/NickSanzotta/WiFiSuite/wiki/EAP-Spray) _In Progress_ <br>
