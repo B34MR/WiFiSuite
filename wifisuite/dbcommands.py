@@ -1,4 +1,8 @@
 #!/usr/bin/env python2
+# Module: database.py
+# Description: Database commands
+# Author(s): Nick Sanzotta / Bill Harshbarger
+# Version: v 1.09232017
 try:
     import sqlite3
 except Exception as e:
@@ -15,7 +19,6 @@ class DB:
         cur = self.conn.cursor()
         cur.execute(""" SELECT * FROM ap WHERE security LIKE "%"""+args+"""%" """)
         # cur.execute(""" SELECT * FROM ap WHERE """+column3+""" LIKE "%"""+args+"""%" """)
-        # cur.execute("""SELECT * FROM ap""")# GROUP BY bssid""")
         results = cur.fetchall()
         cur.close()
         return results
@@ -30,7 +33,13 @@ class DB:
     def get_eapcreds(self, args):
         cur = self.conn.cursor()
         cur.execute(""" SELECT * FROM eapcreds WHERE essid LIKE "%"""+args+"""%" """)
-        # cur.execute("""SELECT * FROM eapcreds""")
+        results = cur.fetchall()
+        cur.close()
+        return results
+
+    def get_eaphashes(self, args):
+        cur = self.conn.cursor()
+        cur.execute(""" SELECT * FROM eaphashes WHERE essid LIKE "%"""+args+"""%" """)
         results = cur.fetchall()
         cur.close()
         return results
@@ -38,16 +47,15 @@ class DB:
     def get_wpakeys(self, args):
         cur = self.conn.cursor()
         cur.execute(""" SELECT * FROM wpakeys WHERE essid LIKE "%"""+args+"""%" """)
-        # cur.execute("""SELECT * FROM wpakeys""")
         results = cur.fetchall()
         cur.close()
         return results
     
-    ### Commits ###
-    def ap_commit(self, location, signal, channel, bssid, essid, client_id):
+    # Commits 
+    def ap_commit(self, location, bssid, channel, signal, security, essid):
         cur = self.conn.cursor()
-        cur.execute("insert into ap (location, signal, channel, bssid, essid, client_id) values (?,?,?,?,?,?)", \
-        (location, signal, channel, bssid, essid, client_id))
+        cur.execute("insert into ap (location, bssid, channel, signal, security, essid) values (?,?,?,?,?,?)", \
+        (location, bssid, channel, signal, security, essid))
 
     def identity_commit(self, identity, essid):
         cur = self.conn.cursor()
@@ -61,13 +69,17 @@ class DB:
 
     def eviltwin_commit(self, essid, identity, password):
         cur = self.conn.cursor()
-        cur.execute("insert into eapcreds (essid, identity, password) values (?,?,?)", \
+        cur.execute("insert into eaphashes (essid, identity, hash) values (?,?,?)", \
             (essid, identity, password))
 
     def wpabrute_commit(self, essid, password):
         cur = self.conn.cursor()
         cur.execute("insert into wpakeys (essid, password) values (?,?)", \
         (essid, password))
+    # def ap_commit(self, location, signal, channel, bssid, essid, client_id):
+    #     cur = self.conn.cursor()
+    #     cur.execute("insert into ap (location, signal, channel, bssid, essid, client_id) values (?,?,?,?,?,?)", \
+    #     (location, signal, channel, bssid, essid, client_id))
     ###################################################################################
     # def get_engagement(self):
     #     cur = self.conn.cursor()
