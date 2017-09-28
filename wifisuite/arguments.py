@@ -80,6 +80,13 @@ def parse_args():
     [--client_cert] Define client side certificate ex: --client_cert
     [--server_cert] Define server side Certificate Authority (CA) ex: --ca_cert /RadiusServer.pem]
     """
+  # DATABASE Help
+  database_help = '\n' + colors.blue + ' DATABASE' + colors.normal + """
+    Basic Options:
+    [database] Access WS database navigator ex: python wifisuite.py database
+    [--database] Use non-default database ex: --database=/opt/WiFiSuite/WiFiSuite.bak.db
+    """
+  
   cheat_sheet = '\n' + colors.blue + ' Cheat Sheet' + colors.normal + """
     SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" --band b eviltwin 
@@ -94,7 +101,7 @@ def parse_args():
     DATABASE:       python wifisuite.py database
    """
   # Custom Help
-  Custom_help = general_help + scan_help + enum_help + spray_help + eviltwin_help + cheat_sheet
+  Custom_help = general_help + scan_help + eviltwin_help + enum_help + spray_help + database_help + cheat_sheet
 
   # Create Parser
   parser = argparse.ArgumentParser(formatter_class=HelpFormatter, description=' '+

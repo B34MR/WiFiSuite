@@ -158,8 +158,9 @@ def main():
 			macchange.macRandom(interface0)
 		# Time not needed, but provides transition exit.
 		time.sleep(.5)
-		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, public, band, server_cert, \
-			private_key, country, state, city, company, ou, email, debug).start()
+		eviltwin_Thread = eviltwin.evilTwin(db_path, interface0, ssid, channel, macaddress, certname, public, band, server_cert, \
+			private_key, country, state, city, company, ou, email, debug)
+		eviltwin_Thread.start()
 		# Time not needed, but provides transitiion exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)
