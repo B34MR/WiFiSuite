@@ -1,9 +1,10 @@
 # Module: openconnect.py
 # Description: Simplifies the ability to connect to open Wi-Fi networks with broadcasts either enabled or disabled.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09252017
+# Version: v 1.09282017
 try:
 	import os, sys, threading, time
+	from subprocess import Popen, PIPE
 	from wpa_supplicant.core import WpaSupplicantDriver
 	from twisted.internet.selectreactor import SelectReactor
 	from twisted.internet import task
@@ -23,14 +24,9 @@ class openConnect():
 			self.interface = interface
 			self.wirelessInt = str(self.interface.get_ifname())
 	
-	def get_external_address(self):
-		data = json.loads(urllib.urlopen("http://ip.jsontest.com/").read())
-		return data["ip"]
-
 	def run(self):
 		cls()
 		banner()
-		# Time Stamp
 		curr_time2 = time.time()
 		network_cfg = {
 				"disabled": 0, 
@@ -43,26 +39,22 @@ class openConnect():
 		self.interface.add_network(network_cfg)	
 		# Connect to Network Profile 0
 		self.interface.select_network(self.supplicantInt+'/Networks/0')	
-		# DEBUG: Print Current WPA CONF
-		# print(interface.get_current_network())	
+		# print(interface.get_current_network())
+
 		while True:
 			if self.interface.get_state() == 'completed':
 				print(' SSID               : ' + ' ' + self.ssid)
-				# print(' Testing PSK        : ' + ' ' + password)
 				print(' Interface          : ' + ' ' + self.interface.get_ifname())
 				print(' Interface Status   : ' + ' ' + self.interface.get_state())
 				print(' Authentication     : ' + ' Success: '+ colors.green + '[!]' + colors.normal)
 				print(' Elapsed Time       :  %.1fs\n' % (time.time() - curr_time2))
-				# db.wpabrute_commit(self.ssid, password)
 				break
 			elif self.interface.get_state() == 'disconnected':
 				print(' SSID               : ' + ' ' + self.ssid)
-				# print(' Testing PSK        : ' + ' ' + password)
 				print(' Interface          : ' + ' ' + self.interface.get_ifname())
 				print(' Interface Status   : ' + ' ' + self.interface.get_state())
 				print(' Authentication     : ' + ' Failed: '+ colors.red + '[!]' + colors.normal)
 				print(' Elapsed Time       :  %.1fs\n ' % (time.time() - curr_time2))
-				# Remove from associated network, which results in state: 'inactive'
 				try:
 					self.interface.remove_network(self.supplicantInt+'/Networks/0')
 				except Exception as e:
@@ -76,27 +68,33 @@ class openConnect():
 				break
 		
 		if self.interface.get_state() == 'completed':
-				os.system('dhclient ' + self.wirelessInt)
+				p1 = Popen(['dhclient', self.wirelessInt], stdout=open("/dev/null", "w"), stderr=open("/dev/null", "w"))
 				print('\n')
 				# Obtain Internal IP Address
-				netifaces.ifaddresses(self.wirelessInt)
-				ip = netifaces.ifaddresses(self.wirelessInt)[2][0]['addr']
-				print(blue('i')+self.wirelessInt.upper() + ' IP Address: ' + ip)
-
+				try:
+					netifaces.ifaddresses(self.wirelessInt)
+					ip = netifaces.ifaddresses(self.wirelessInt)[2][0]['addr']
+					print(green('*')+self.wirelessInt.upper() + ' IP Address: ' + ip)
+				except Exception as e:
+					print('Error Gaining an IP address from DHCP: %s' % (e))
+					print('Please wait, or attempt to reconnect\n')
 				# Testing Connectivity Check and Portal Page
 				try:
 					extipAddress = self.get_external_address()
 				except (IOError, ValueError) as e:
 					print(red('!')+ 'There maybe a signin page')
 					pass
-
-				raw_input(blue('*')+'Press Enter to gracefully close the WiFi network connection:')
+				raw_input(normal('*')+'Press Enter to gracefully close the WiFi network connection:')
 				# Remove from associated network, which results in state: 'inactive'
 				self.interface.remove_network(self.supplicantInt+'/Networks/0')
 				# Wait for inactive state, based on a timer.
 				time.sleep(7)
-				print(blue('i')+'WiFi Connection Terminated. ')
+				print(normal('i')+'WiFi Connection Terminated. ')
 				# self.password.task_done()
 		else:
 			print('Done')
 			# self.password.task_done()
+
+	def get_external_address(self):
+		data = json.loads(urllib.urlopen("http://ip.jsontest.com/").read())
+		return data["ip"]

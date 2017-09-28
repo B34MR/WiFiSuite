@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
-# __future__ must be imported at start of script.
-from __future__ import print_function
+from __future__ import print_function # __future__ must be imported at start of script.
+
 try:
 	import sys, time
 	import threading
@@ -16,32 +16,31 @@ try:
 	readline.parse_and_bind("tab: complete")
 	from theme import *
 	# Import Modules
+	from modules import dbnavigator
+	from modules import eviltwin
+	from modules import pubc
+	from modules import scanner
 	from modules import eapenum
 	from modules import eapspray
 	from modules import eapconnect
 	from modules import wpabrute
 	from modules import wpaconnect
-	from modules import scanner
 	from modules import openconnect
-	from modules import macchange
-	from modules import database
-	from modules import eviltwin
-	from modules import pubc
+	from helpers import macchange
 	from helpers import deauthentication
 	from helpers import monitormode
 
 except Exception as e:
-	print(' [!] Error: ' + str(e))
+	print(' [!] CORE - Error: %s' % (e))
 	sys.exit(1)
 
 def main():
 	# Create Arguments
 	args = arguments.parse_args()
-	# Set Queue to infinite
+	# Queues
 	Queue_user = Queue(maxsize=0) #CHECK queue may remove this feature.
 	Queue_password = Queue(maxsize=0) #CHECK queue may remove this feature.
-
-    # Argpparse Vars 
+	# General arguments
 	mode = args.mode
 	ssid = args.ssid
 	user = args.user
@@ -52,12 +51,12 @@ def main():
 	seconds = args.seconds
 	location = args.location
 	macaddress = args.mac
-	# EAP Cert Vars
-	# ca_cert = '/opt/my_scripts/ProjectEAP/eapSpray/RadiusServer.pem' 
-	# server_cert = args.server_cert # Not a requirement, if defined it must point to correct ca_cert else connection will fail.
+	# EAP arguments for SSL Certifications
 	server_cert_path = ''
 	client_cert = ''
-	#EvilTwin Vars
+	# ca_cert = '/opt/my_scripts/ProjectEAP/eapSpray/RadiusServer.pem' 
+	# server_cert = args.server_cert # Not a requirement, if defined it must point to correct ca_cert else connection will fail.
+	# EvilTwin arguemnents
 	certname = args.certname
 	public = args.public
 	server_cert = args.server_cert
@@ -70,13 +69,12 @@ def main():
 	ou = args.ou
 	email = args.email
 	debug = args.debug
+	# Database arguments
+	db_path = os.path.abspath(args.database)
 
-
-
-	# Launch DATABASE module if called from CLI.
+	# Launch DATABASE module.
 	if mode in 'database':
-		database.main()
-		reactor.callFromThread(reactor.stop)
+		prompt = dbnavigator.Navigator(db_path).cmdloop()
 	# If DATABASE was not called, Launch Twisted Reactor and creates supplicant interface.
 	else:
 		# Starts Twisted Reactor in the background via reactorThread
@@ -148,9 +146,9 @@ def main():
 
 	# MODULE Menu
 	if mode in 'scan':
-		# I may remove threading for scanner, as there not much need.
 		seconds = 5
-		apscanT1 = scanner.apScan(location, seconds, supplicantInt0, interface0).start()
+		apscan_Thread = scanner.apScan(db_path, location, seconds, supplicantInt0, interface0)
+		apscan_Thread.start()
 		reactor.callFromThread(reactor.stop)
 	elif mode in 'eviltwin':
 		# Consider placing macchange inside the evilTwin class.
@@ -158,11 +156,11 @@ def main():
 			macchange.macManual(interface0, macaddress)
 		elif not macaddress:
 			macchange.macRandom(interface0)
-		# Time not needed, but provides smoother exit.
+		# Time not needed, but provides transition exit.
 		time.sleep(.5)
 		eviltwinT1 = eviltwin.evilTwin(interface0, ssid, channel, macaddress, certname, public, band, server_cert, \
 			private_key, country, state, city, company, ou, email, debug).start()
-		# Time not needed, but provides smoother exit.
+		# Time not needed, but provides transitiion exit.
 		time.sleep(.5) 
 		reactor.callFromThread(reactor.stop)
 	elif mode in 'enum':
@@ -172,7 +170,7 @@ def main():
 
 		try:
 			# Create Enum-Sniffing Thread (non-daemon)
-			enum_Thread = eapenum.eapEnum(apmac, seconds, interface0, channel)
+			enum_Thread = eapenum.eapEnum(db_path, apmac, seconds, interface0, channel)
 			enum_Thread.start()
 			time.sleep(2.5)
 			# Create a deAuth Thread (non-daemon)
@@ -185,12 +183,13 @@ def main():
 		reactor.callFromThread(reactor.stop)
 
 	elif mode in 'spray':
-		print(blue('i')+ 'Using Interface(s): '+str(interface0.get_ifname()))
-		'''Determines if Brute-force attack will be EAP or WPA by checking if the USER parameter is present'''
+		print(blue('i')+'Using Interface(s): '+str(interface0.get_ifname()))
+		# Determines if Brute-force attack will be EAP or WPA by checking if the USER parameter is present
 		if user:
-			# initiates eapSpray worker thread
-			eapSprayT1 = eapspray.eapSpray(ssid, Queue_user, userList, password, server_cert,\
-			server_cert_path, client_cert, supplicantInt0, interface0).start()
+			# Create EAP Spray Thread (daemon)
+			eapSpray_Thread = eapspray.eapSpray(db_path, ssid, Queue_user, userList, password, server_cert,\
+			server_cert_path, client_cert, supplicantInt0, interface0)
+			eapSpray_Thread.start()
 			# Starts Queue
 			Queue_user.join()
 			# Stops Twisted Reactor after the Queue is empty.
@@ -200,9 +199,10 @@ def main():
 			lc = task.LoopingCall(check_stop_flag)
 			lc.start(10)
 		else:
-			# initiates wpaBrute worker thread
-			wpaBruteT1 = wpabrute.wpaBrute(ssid, Queue_password, passwordList, supplicantInt0,\
-			interface0).start()
+			# Create WPA Brute Thread (daemon)
+			wpaBrute_Thread = wpabrute.wpaBrute(db_path, ssid, Queue_password, passwordList, supplicantInt0,\
+			interface0)
+			wpaBrute_Thread.start()
 			# Starts Queue
 			Queue_password.join()
 			def check_stop_flag():
@@ -212,11 +212,12 @@ def main():
 			lc.start(10)
 
 	elif mode in 'connect':
-		'''Determines if Connection will be EAP or WPA by checking if the USER parameter is present'''
+		# Determines if Connection will be EAP or WPA by checking if the USER parameter is present
 		if user:
-			# initiates eapConnect worker thread
-			eapConnectT1 = eapconnect.eapConnect(ssid, Queue_user, password, server_cert,\
-			server_cert_path, client_cert, supplicantInt0, interface0).start()
+			# Create EAP Coonect Thread (daemon)
+			eapConnect_Thread = eapconnect.eapConnect(db_path, ssid, Queue_user, password, server_cert,\
+			server_cert_path, client_cert, supplicantInt0, interface0)
+			eapConnect_Thread.start()
 			# Starts Queue
 			Queue_user.join()
 			# Stops Twisted Reactor after the Queue is empty.
@@ -226,9 +227,10 @@ def main():
 			lc = task.LoopingCall(check_stop_flag)
 			lc.start(10)
 		elif password:
-			# initiates wpaConnect worker thread
-			wpaConnectT1 = wpaconnect.wpaConnect(ssid, Queue_password, supplicantInt0, interface0).start()
-			# Waits until Queue is Empty and all Threads are done working.
+			# Create WPA Coonect Thread (daemon)
+			wpaConnect_Thread = wpaconnect.wpaConnect(db_path, ssid, Queue_password, supplicantInt0, interface0)
+			wpaConnect_Thread.start()
+			# Starts Queue
 			Queue_password.join()
 			# Stops Twisted Reactor after the Queue is empty.
 			def check_stop_flag():

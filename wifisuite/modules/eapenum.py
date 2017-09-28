@@ -2,37 +2,26 @@
 # Description: Enumerates insecure Extensible Authentication Protocol (EAP) user identities.
 # The Eapenum module will perform a deauthentication attack against a single access point/BSSID,
 # while client probes attempt to reconnect Eapenum will sniff for insecure EAP user identities.
-# Author(s): Nick Sanzotta / Bill Harshbarger
-# Version: v 1.09252017
+# Author(s): Nick Sanzotta
+# Version: v 1.09282017
 try:
 	import os, sys, signal, threading
 	from datetime import datetime
 	from scapy.all import *
 	from theme import *
+	from dbcommands import DB
 	from helpers import monitormode
 except Exception as e:
 	print('\n [!] EAPENUM - Error: ' % (e))
 	sys.exit(1)
-	
-try:
-     from dbcommands import DB
-     import sqlite3
-     conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Keep Thread Support
-     conn.text_factory = str # Keep Interpret 8-bit bytestrings 
-     conn.isolation_level = None # Keep Autocommit Mode
-     db = DB(conn)
-except Exception as e:
-     print(red('!') + 'Could not connect to database: %s' % (e))
-     sys.exit(1)
-
 # Keep outside of class eapEnum()
 identities = set()
 bssid = set()
 
 class eapEnum(threading.Thread):
-	def __init__(self, apmac, timeout, interface, channel):
+	def __init__(self, db_path, apmac, timeout, interface, channel):
 		threading.Thread.__init__(self)
-		self.setDaemon(0) # Creates thread in non-daemon mode
+		self.setDaemon(0) # non-daemon
 		self.apmac = apmac
 		self.timeout = timeout # must be >0, if you choose not to include a timeout the args must me removed.
 		self.interface = interface
@@ -44,10 +33,11 @@ class eapEnum(threading.Thread):
 		self.wirelessInt = str(self.interface.get_ifname())
 		self.log_timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.now())
 		self.identities_log = 'data/identities/ch%s_%s.%s' % (self.channel, self.apmac, self.log_timestamp)
-	
+		self.db_path = db_path
+
 	def run(self):
-		# Check Identities folder exists
-		self.datafolders_check()
+		self.database_connect() # Connect to database
+		self.datafolders_check() # Check Identities folder exists
 		try:
 			print(normal('*')+'Packet sniffing on %s for the next %s seconds.' % (self.wirelessInt, self.timeout))
 			print(blue('*')+'Identities Log: %s ' % (self.identities_log))
@@ -60,7 +50,7 @@ class eapEnum(threading.Thread):
 			print('\n'+red('!')+'Packet Sniffing Aborted: %s' % (e))
 
 	def datafolders_check(self):
-		'''Creates Identities folder if missing'''
+		# Creates Identities folder if missing
 		identities_directory = 'data/identities'
 		if not os.path.exists(identities_directory):
 			os.makedirs(identities_directory)
@@ -85,5 +75,14 @@ class eapEnum(threading.Thread):
 						f1.write(identity)
 						f1.write('\n')
 					# Commit to database
-					db.identity_commit(identity, essid)
+					try:
+						self.db.identity_commit(identity, essid)
+					except Exception as e:
+						print(red('!')+'WARNING - (EAPENUM) Could not save to database: %s' % (e))
 
+	def database_connect(self):
+		try:
+			self.db = DB(self.db_path)
+		except Exception as e:
+			print(red('!')+'WARNING - (EAPENUM) Could not connect to database: %s' % (e))
+			pass

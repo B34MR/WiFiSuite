@@ -15,7 +15,7 @@ except Exception as e:
 class crtb(threading.Thread):
 	def __init__(self, certname, email, debug):
 		threading.Thread.__init__(self)
-		self.setDaemon(0) # Creates thread in non-daemon mode
+		self.setDaemon(0) # non-daemon
 		self.certname = certname
 		self.email = email
 		self.debug = debug
@@ -58,13 +58,13 @@ class crtb(threading.Thread):
 		os.chdir(self.cwd)
 
 	def datafolders_check(self):
-		'''Creates Web Server directory folder if missing'''
+		# Creates Web Server directory folder if missing
 		self.webserver_directory = '/var/www/WiFiSuite/'
 		if not os.path.exists(self.webserver_directory):
 			os.makedirs(self.webserver_directory)
 
 	def dependency_check(self):
-		'''Checks if hostapd-wpe is installed, if not installs it'''
+		# Checks if hostapd-wpe is installed, if not installs it
 		p1 = Popen(['which', 'certbot'], stdout=PIPE)
 		if p1.communicate()[0]:
 			p2 = Popen(["certbot", "--version"], stdout=PIPE, stderr=PIPE)

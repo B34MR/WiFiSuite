@@ -1,20 +1,22 @@
 #!/usr/bin/env python2
-# Module: database.py
+# Module: dbcommands.py
 # Description: Database commands
 # Author(s): Nick Sanzotta / Bill Harshbarger
-# Version: v 1.09232017
+# Version: v 1.09282017
 try:
-    import sqlite3
+    import os, sys, sqlite3
 except Exception as e:
-    print('\n  [!] Error ' +str(e)+'\n')
+    print('\n [!] DBCOMMANDS - Error: ' % (e))
     sys.exit(1)
 
 class DB:
-    def __init__(self, conn):
-        self.conn = conn
-        # CHECK is cur can be used once as oppose to in each func.
-        # cur = self.conn.cursor()
+    def __init__(self, db_path):
+        self.db_path = db_path
+        self.conn = sqlite3.connect(self.db_path, check_same_thread=False) # Thread Support
+        self.conn.text_factory = str # Interpret 8-bit bytestrings 
+        self.conn.isolation_level = None # Autocommit Mode
 
+    # Database Queries
     def get_ap(self, args):
         cur = self.conn.cursor()
         cur.execute(""" SELECT * FROM ap WHERE security LIKE "%"""+args+"""%" """)
@@ -51,7 +53,7 @@ class DB:
         cur.close()
         return results
     
-    # Commits 
+    # Database Commits 
     def ap_commit(self, location, bssid, channel, signal, security, essid):
         cur = self.conn.cursor()
         cur.execute("insert into ap (location, bssid, channel, signal, security, essid) values (?,?,?,?,?,?)", \

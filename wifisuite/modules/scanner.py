@@ -2,30 +2,20 @@
 # Description: Scans the WiFi spectrum and saves output to the WiFiSuite database.
 # Author: Bill Harshbarger 
 # Contributors: Nick Sanzotta/@Beamr
-# Version: v 1.09252017
+# Version: v 1.09282017
 try:
 	from scapy.all import *
-	from theme import *
 	import threading, sched, time, sqlite3, os, sys, signal, re
 	from time import sleep
 	from subprocess import Popen, PIPE, STDOUT 
+	from theme import *
+	from dbcommands import DB
 except Exception as e:
 	print('\n [!] SCANNER - Error %s' % (e))
 	sys.exit(1)
 
-try:
-	from dbcommands import DB
-	import sqlite3
-	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
-	conn.text_factory = str # Interpret 8-bit bytestrings 
-	conn.isolation_level = None # Autocommit Mode
-	db = DB(conn)
-except Exception as e:
-	print(red('!')+'Could not connect to database: %s' % (e))
-	sys.exit(1)
-
 class apScan(threading.Thread):
-	def __init__(self, location, seconds, supplicantInt, interface):
+	def __init__(self, db_path, location, seconds, supplicantInt, interface):
 		threading.Thread.__init__(self)
 		self.setDaemon(0) # non-daemon
 		self.supplicantInt = supplicantInt
@@ -40,8 +30,10 @@ class apScan(threading.Thread):
 		self.essid=''
 		self.bssid=''
 		self.encryption = ''
+		self.db_path = db_path
 	
 	def run(self):
+		self.database_connect() # Connect to database
 		# Create iwlist sub process.
 		p1 = subprocess.Popen(['/bin/bash', '-c','iwlist %s scan' % \
 			(self.wirelessInt)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -80,20 +72,19 @@ class apScan(threading.Thread):
 			sys.exit(0)
 
 	def dbcommit(self):
-		#loop results / loop iwlist output
+		# Loop results / loop iwlist output
 		for key in self.iwApDict.items()[1:]:
 			b=key[0]
 			b=b.replace(':','').strip()
 			vals=key[1]
 			c, s, si, e = vals
 			try:
-				db.ap_commit(self.location, b, c, s, si, e)
+				self.db.ap_commit(self.location, b, c, s, si, e)
 			except sqlite3.Error as e:
-				print(red('!')+'Database Error: %s' % e.args[0])
-
+				print(red('!')+'WARNING - (EAPENUM) Could not save to database: %s' % (e))
 
 	def output(self):
-		'''Display Output to end User'''
+		# Display Output to end User
 		print(' %-20s %-4s %-6s %-7s %s' %\
 			 ('BSSID', 'CH', 'PWR', 'AUTH', 'ESSID'))
 		print(' %-20s %-4s %-6s %-7s %s' % \
@@ -105,3 +96,10 @@ class apScan(threading.Thread):
 			print(' %-20s %-4s %-6s %-7s %s'%\
 			(mac, ch, pwr.replace(' dBm',''), auth, essid))
 		print('\n')
+
+	def database_connect(self):
+		try:
+			self.db = DB(self.db_path)
+		except Exception as e:
+			print(red('!')+'WARNING - (SCANNER) Could not connect to database: %s' % (e))
+			pass

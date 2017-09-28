@@ -1,34 +1,24 @@
 # Module: eviltwin.py
-# Description: Creates an EAP based access point AKA EvilTwin.
+# Description: Creates an rogue access point (EvilTwin).
 # Author: Nick Sanzotta
-# Contributors: 
-# Version: v 1.09252017
+# Contributors:
+# Version: v 1.09282017
 try:
 	import os, sys, shutil, time, datetime, signal, threading
 	from subprocess import Popen, PIPE
 	from theme import *
+	from dbcommands import DB
 	import pubc
 except Exception as e:
 	print('\n [!] EVILTWIN - Error: ' % (e))
 	sys.exit(1)
 
-try:
-	from dbcommands import DB
-	import sqlite3
-	conn = sqlite3.connect('data/WiFiSuite.db', check_same_thread=False) # Thread Support
-	conn.text_factory = str # Interpret 8-bit bytestrings 
-	conn.isolation_level = None # Autocommit Mode
-	db = DB(conn)
-except Exception as e:
-	print(red('!')+'Could not connect to database: '+str(e))
-	sys.exit(1)
-
 class evilTwin(threading.Thread):
-	def __init__(self, interface, ssid, channel, macaddress, \
+	def __init__(self, db_path, interface, ssid, channel, macaddress, \
 	 certname, public,  band, server_cert, private_key,\
 	 country, state, city, company, ou, email, debug):
 		threading.Thread.__init__(self)
-		self.setDaemon(0) # Creates thread in non-daemon mode
+		self.setDaemon(0) # non-daemon
 		self.interface = interface
 		self.wirelessInt = str(self.interface.get_ifname())
 		self.macaddress = macaddress
@@ -50,9 +40,10 @@ class evilTwin(threading.Thread):
 		self.hashcat_log = 'data/eviltwin/%s_%s.hashcat' % (self.ssid, self.log_timestamp)
 		self.jtr_log = 'data/eviltwin/%s_%s.jtr' % (self.ssid, self.log_timestamp)
 		self.letsencrypt_dir = '/etc/letsencrypt/live/'
-
+		self.db_path = db_path
 
 	def run(self):
+		self.database_connect() # Connect to database
 		self.datafolders_check()
 		self.cert_clean_up()
 		
@@ -111,7 +102,11 @@ class evilTwin(threading.Thread):
 						f2.write(jtr)
 						f2.write('\n')
 					# Commit to database
-					db.eviltwin_commit(self.ssid, user, hashcat)
+					try:
+						self.db.eviltwin_commit(self.ssid, user, hashcat)
+					except Exception as e:
+						print(red('!')+'WARNING - (EAPCONNECT) Could not save to database: %s' % (e))
+
 			else:
 				sys.stdout.write(line)
 
@@ -140,7 +135,7 @@ class evilTwin(threading.Thread):
 			# print(p2.communicate())
 	
 	def datafolders_check(self):
-		'''Creates Cert and or Hostapd folder(s) if missing'''
+		# Creates Cert and or Hostapd folder(s) if missing
 		cert_directory = 'data/certs'
 		hostapd_directory = 'data/hostapd-wpe'
 		eviltwin_directory = 'data/eviltwin'
@@ -166,18 +161,18 @@ class evilTwin(threading.Thread):
 		    pass
 
 	def sanity_check(self):
-		'''Terminates conflicting processes'''
+		# Terminates conflicting processes
 		p1 = Popen(['airmon-ng','check','kill'], stdout=PIPE)
 
 	def fix_broken_package(self):
-		'''Fixes broken hostapd-wpe packages'''
+		# Fixes broken hostapd-wpe packages
 		os.system('apt-get purge hostapd-wpe')
 		os.system('apt-get update')
 		os.system('apt-get install hostapd-wpe')
 		#/var/run/hostapd-wpe/wlan0
 
 	def hostapd_config(self):
-		'''Creates hostadp-wpe config file based of parameter values'''
+		#Creates hostadp-wpe config file based of parameter values
 		# Open original hostapd-wpe configuration file.
 		with open('/etc/hostapd-wpe/hostapd-wpe.conf', 'r') as f1:
 		    # Read a List of lines into data
@@ -252,3 +247,10 @@ class evilTwin(threading.Thread):
 		createCert = cert.format(country, state, city, company, orgUnit, fqdn, email)
 		p1 = Popen([createCert],shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=open("/dev/null", "w"))
 		p1.wait()
+
+	def database_connect(self):
+		try:
+			self.db = DB(self.db_path)
+		except Exception as e:
+			print(red('!')+'WARNING - (EvilTwin) Could not connect to database: %s' % (e))
+			pass

@@ -149,6 +149,10 @@ def parse_args():
   mac_group = parser.add_argument_group(colors.blue + ' MAC' + colors.normal)
   mac_group.add_argument('-m','--mac', type=str, metavar='', help='')
 
+  # DATABASE OPTIONS
+  database_group = parser.add_argument_group(colors.blue + ' DATABASE' + colors.normal)
+  database_group.add_argument('--database', type=str, metavar='', default='data/WiFiSuite.db', help='')
+  
   # Create parser instance
   args = parser.parse_args()
   # Checks for Modules that require -i/--interface option.
