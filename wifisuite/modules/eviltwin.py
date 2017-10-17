@@ -186,11 +186,15 @@ class evilTwin(threading.Thread):
 		data[9] = 'private_key=%s\n' % (self.private_key)
 		data[19] = 'wpe_logfile=data/eviltwin/%s_%s.log\n' % (self.ssid, self.log_timestamp)
 		data[183] = 'hw_mode=%s\n' % (self.band.lower())
+		data[146] = 'country_code=US\n'
+		
+		country_code = data[146].lstrip('country_code=').rstrip('\n')
 
 		print(blue('*')+'EvilTwin Details:')
 		print('     AP Interface: %s' % (self.wirelessInt))
 		print('     SSID: %s' % (self.ssid))
 		print('     Band: %s' % (self.band))
+		print('     Country Code: %s' % (country_code))
 		print('     Channel: %s' % (self.channel))
 		print('     Certificate Name: %s' % (self.certname))
 		print('     Hashcat Log: %s' % (self.hashcat_log))
