@@ -23,7 +23,7 @@ def killProcess(procName):
 				# serivice network-manager stop, deactives the service.
 				# This can be validated with service network-manager status
 				# os.kill(pid, signal.SIGKILL)
-				os.system('service network-manager stop')
+				os.system('systemctl stop network-manager')
 				# os.pkill('NetworkManager')
 				print(' network-manager service stoppped.')
 				return True
