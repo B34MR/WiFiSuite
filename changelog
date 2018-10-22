@@ -1,0 +1,6 @@
+10/22/2018
+------------
+- Version 1.10222018
+	- Refactored & Linted wifisuite.py
+	- Fixed issue #6, database should not terminate supplicant.
+

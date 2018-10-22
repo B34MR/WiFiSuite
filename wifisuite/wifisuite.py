@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+"""WiFiSuite Entry Point."""
 try:
     import createdb
     import core
@@ -12,6 +13,7 @@ except Exception as e:
 
 
 def kill_process(proc_name):
+    """Kill specified process."""
     try:
         pid = int(check_output(['pidof', proc_name]))
         if proc_name == 'NetworkManager':
@@ -41,34 +43,31 @@ def kill_process(proc_name):
             returncode = 0
     except CalledProcessError as ex:
         o = ex.output
+        print(o)
         returncode = ex.returncode
         # Another Error Occured
         if returncode != 1:
             raise
 
 
-def sanity_check():
-    """Runs sanity checks prior to launching core."""
-
-    # ADD if db exists, option to overwrite
+def run():
+    """Run sanity checks, then launch core."""
     createdb.dbcheck()
+    # Kill network manager service, if running.
     kill_process('NetworkManager')
-    # EvilTwin process sanitization.
+    # Kill hostapd-wpe processes, if running.
     kill_process('hostapd-wpe')
     # Detect existing WiFiSuite processes.
     script_name = os.path.basename(__file__)
     wifisuite_pid = commands.getstatusoutput("ps aux | grep -e '%s' | grep -v grep | awk '{print $2}'" % script_name)
     num_process = len(wifisuite_pid[1]) / 4
     print(' [i] Wifisuite processes detected: %s' % (num_process))
-    # If another WiFiSuite instance is running, do not kill wpa_supplicant.
+    # If another WiFiSuite instance is running other than this instance, do not kill wpa_supplicant.
     if num_process == 1:
         kill_process('wpa_supplicant')
         print(' [i] wpa_supplicant service stopped.')
     print(' [i] Sanity checks completed.')
 
-
-def run():
-    sanity_check()
     core.main()
 
 if __name__ == '__main__':
