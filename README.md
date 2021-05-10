@@ -1,3 +1,6 @@
+## This project is no longer supported
+
+
 ![Supported Python versions](https://img.shields.io/badge/python-2.7-blue.svg)
 # WiFiSuite     
 WiFiSuite is designed to help Pentesters streamline the process of auditing wireless networks,
