@@ -1,41 +1,25 @@
-# WiFiSuite     
-WiFiSuite is designed to help Pentesters streamline the process of auditing wireless networks,
-this is done by consolidating the most common tools and techniques in a unified platform backed with a SQLite database.
+## The WiFiSuite Project
 
+### Installation for WifiSuite legacy (Python2.7 fix):
 
-## Installation
-    OS Requirements: 
-	Kali Rolling
-###
-    Dependencies:
-        hostapd-wpe
-        netifaces
-        python-pip 
-        python-dev
-        psutil
-        scapy    
-        wpa_supplicant
-###	
-     Install:
-        apt-get install scapy
-        git clone https://github.com/NickSanzotta/WiFiSuite.git
-        cd WiFiSuite
-        python setup.py install --record install.log	
-###
-     Run:
-       cd wifisuite/
-       python wifisuite.py
-       Output of Successful Installation:
-          [i] Directory found: data/
-          [!] Database not found: data/WiFiSuite.db
-          [i] Created Datebase: data/WiFiSuite.db
-          [i] Database instantiated
-
-## Uninstall
+    apt install python2-pip-whl
+    apt install python2-setuptools-whl
+    apt install hostapd-wpe
     cd WiFiSuite
-    cat install.log | xargs rm -rf
+    virtualenv -p /usr/bin/python2.7 venv/
+    source venv/bin/activate
+    python2.7 -m pip install netifaces
+    python2.7 -m pip install psutil
+    python2.7 -m pip install twisted
+    python2.7 -m pip install txdbus
+    python2.7 -m pip install click
+    python2.7 -m pip install scapy
+    python2.7 setup.py install
+    cd wifisuite/
+    python2.7 wifisuite.py
 
-## Usage
+### Usage:
+
     SCAN:           python wifisuite.py -iwlan0 scan --location="CoffeeShop"
     EVILTWIN (EAP): python wifisuite.py -iwlan0 -s"New Corp WiFi" -m 66:55:44:AB:40:88 -c4 --certname="WiFISuite" --band b eviltwin
     ENUM:           python wifisuite.py -iwlan0 -d 10:10:10:A9:72:E6 -c4 enum --seconds=30 --packets=5
